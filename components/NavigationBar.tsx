@@ -55,13 +55,13 @@ export default function NavigationBar() {
                     <Link href="/client/profilesekolah" className="hover:text-red-600">
                       Profile Sekolah
                     </Link>
-                    <Link href="/Fasilitas" className="hover:text-red-600">
+                    <Link href="/client/Fasilitas" className="hover:text-red-600">
                       Fasilitas
                     </Link>
                     <Link href="/visi-misi" className="hover:text-red-600">
                       Visi & Misi
                     </Link>
-                    <Link href="/guru" className="hover:text-red-600">
+                    <Link href="/client/guru" className="hover:text-red-600">
                       Data Guru
                     </Link>
                   </ul>
@@ -76,7 +76,7 @@ export default function NavigationBar() {
               Berita
             </Link>
             <Link
-              href="/ekstrakulikuler"
+              href="/client/ekstrakulikuler"
               className="text-[16px] font-semibold hover:text-red-600"
             >
               Ekstrakulikuler
