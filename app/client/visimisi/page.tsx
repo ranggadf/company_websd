@@ -1,5 +1,5 @@
 "use client";
-
+import Footer from '@/components/Footer';
 import { motion } from "framer-motion";
 
 // Komponen Ikon untuk Visi (Mata)
@@ -54,18 +54,18 @@ const MissionIcon = () => (
 );
 
 export default function VisiMisiPage() {
-  // Varian animasi untuk container
+  // Varian animasi container
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.3, // Membuat animasi setiap anak elemen muncul berurutan
+        staggerChildren: 0.3,
       },
     },
   };
 
-  // Varian animasi untuk setiap item (kartu Visi & Misi)
+  // Varian animasi untuk item
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
@@ -79,94 +79,102 @@ export default function VisiMisiPage() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-100 min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 font-sans">
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-        className="text-center mb-12"
-      >
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
-          Visi & Misi Kami
-        </h1>
-        <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-          Membentuk masa depan yang cerah melalui pendidikan inovatif dan
-          karakter yang kuat.
-        </p>
-      </motion.div>
-
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl w-full"
-      >
-        {/* Kartu Visi */}
+    <div className="flex flex-col min-h-screen bg-white font-sans">
+      {/* Konten utama */}
+      <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 md:p-10">
         <motion.div
-          variants={itemVariants}
-          whileHover={{ scale: 1.03, y: -5, transition: { duration: 0.2 } }}
-          className="bg-white/70 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50 flex flex-col items-center text-center"
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center mb-12"
         >
-          <div className="bg-rose-500 text-white rounded-full p-4 mb-6 shadow-lg">
-            <VisionIcon />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">VISI</h2>
-          <p className="text-gray-600 mb-6 italic">
-            "Menjadi lembaga pendidikan terdepan yang menghasilkan generasi
-            unggul, kreatif, dan berakhlak mulia yang siap menghadapi tantangan
-            global."
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
+            Visi & Misi Kami
+          </h1>
+          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            Membentuk masa depan yang cerah melalui pendidikan inovatif dan
+            karakter yang kuat.
           </p>
-          <ul className="list-inside list-disc text-left space-y-3 text-gray-700">
-            <li>
-              Menyelenggarakan pendidikan berkualitas yang terintegrasi dengan
-              teknologi terkini.
-            </li>
-            <li>
-              Menciptakan lingkungan belajar yang inspiratif dan mendukung
-              potensi siswa.
-            </li>
-            <li>
-              Membangun karakter siswa yang berintegritas, bertanggung jawab,
-              dan peduli sesama.
-            </li>
-          </ul>
         </motion.div>
 
-        {/* Kartu Misi */}
         <motion.div
-          variants={itemVariants}
-          whileHover={{ scale: 1.03, y: -5, transition: { duration: 0.2 } }}
-          className="bg-white/70 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50 flex flex-col items-center text-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl w-full"
         >
-          <div className="bg-purple-500 text-white rounded-full p-4 mb-6 shadow-lg">
-            <MissionIcon />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">MISI</h2>
-          <p className="text-gray-600 mb-6 italic">
-            "Membekali setiap siswa dengan pengetahuan, keterampilan, dan
-            nilai-nilai luhur untuk meraih kesuksesan serta memberikan
-            kontribusi positif bagi masyarakat."
-          </p>
-          <ul className="list-inside list-disc text-left space-y-3 text-gray-700">
-            <li>
-              Melaksanakan kurikulum yang adaptif dan relevan dengan
-              perkembangan zaman.
-            </li>
-            <li>
-              Mengembangkan program ekstrakurikuler untuk menyalurkan bakat dan
-              minat siswa.
-            </li>
-            <li>
-              Menjalin kemitraan strategis dengan orang tua, masyarakat, dan
-              industri.
-            </li>
-            <li>
-              Meningkatkan kompetensi pendidik dan tenaga kependidikan secara
-              berkelanjutan.
-            </li>
-          </ul>
+          {/* Kartu Visi */}
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ scale: 1.03, y: -5, transition: { duration: 0.2 } }}
+            className="bg-red-800 shadow-xl rounded-2xl p-8 border border-red-900 flex flex-col items-center text-center text-white"
+          >
+            <div className="bg-white text-red-800 rounded-full p-4 mb-6 shadow-lg">
+              <VisionIcon />
+            </div>
+            <h2 className="text-3xl font-bold mb-4">VISI</h2>
+            <p className="mb-6 italic text-gray-100">
+              "Menjadi lembaga pendidikan terdepan yang menghasilkan generasi
+              unggul, kreatif, dan berakhlak mulia yang siap menghadapi
+              tantangan global."
+            </p>
+            <ul className="list-inside list-disc text-left space-y-3 text-gray-100">
+              <li>
+                Menyelenggarakan pendidikan berkualitas yang terintegrasi dengan
+                teknologi terkini.
+              </li>
+              <li>
+                Menciptakan lingkungan belajar yang inspiratif dan mendukung
+                potensi siswa.
+              </li>
+              <li>
+                Membangun karakter siswa yang berintegritas, bertanggung jawab,
+                dan peduli sesama.
+              </li>
+            </ul>
+          </motion.div>
+
+          {/* Kartu Misi */}
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ scale: 1.03, y: -5, transition: { duration: 0.2 } }}
+            className="bg-red-800 shadow-xl rounded-2xl p-8 border border-red-900 flex flex-col items-center text-center text-white"
+          >
+            <div className="bg-white text-red-800 rounded-full p-4 mb-6 shadow-lg">
+              <MissionIcon />
+            </div>
+            <h2 className="text-3xl font-bold mb-4">MISI</h2>
+            <p className="mb-6 italic text-gray-100">
+              "Membekali setiap siswa dengan pengetahuan, keterampilan, dan
+              nilai-nilai luhur untuk meraih kesuksesan serta memberikan
+              kontribusi positif bagi masyarakat."
+            </p>
+            <ul className="list-inside list-disc text-left space-y-3 text-gray-100">
+              <li>
+                Melaksanakan kurikulum yang adaptif dan relevan dengan
+                perkembangan zaman.
+              </li>
+              <li>
+                Mengembangkan program ekstrakurikuler untuk menyalurkan bakat
+                dan minat siswa.
+              </li>
+              <li>
+                Menjalin kemitraan strategis dengan orang tua, masyarakat, dan
+                industri.
+              </li>
+              <li>
+                Meningkatkan kompetensi pendidik dan tenaga kependidikan secara
+                berkelanjutan.
+              </li>
+            </ul>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </main>
+
+      {/* Footer Full Width */}
+      <div className="-mx-4 sm:-mx-6 md:-mx-10">
+        <Footer />
+      </div>
     </div>
   );
 }

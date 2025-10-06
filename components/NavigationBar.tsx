@@ -58,7 +58,7 @@ export default function NavigationBar() {
                     <Link href="/client/Fasilitas" className="hover:text-red-600">
                       Fasilitas
                     </Link>
-                    <Link href="/visi-misi" className="hover:text-red-600">
+                    <Link href="/client/visimisi" className="hover:text-red-600">
                       Visi & Misi
                     </Link>
                     <Link href="/client/guru" className="hover:text-red-600">
@@ -70,7 +70,7 @@ export default function NavigationBar() {
             </div>
 
             <Link
-              href="/berita"
+              href="/client/berita"
               className="text-[16px] font-semibold hover:text-red-600"
             >
               Berita
@@ -82,7 +82,7 @@ export default function NavigationBar() {
               Ekstrakulikuler
             </Link>
             <Link
-              href="/hubungi-kami"
+              href="/client/hubungi"
               className="text-[16px] font-semibold hover:text-red-600"
             >
               Hubungi Kami
@@ -91,14 +91,17 @@ export default function NavigationBar() {
         </div>
 
         {/* Menu kanan (PPDB) */}
-        <div>
-          <Link
-            href="/ppdb"
-            className="text-[16px] font-semibold hover:text-red-600 mr-20"
-          >
-            PPDB
-          </Link>
-        </div>
+      <div>
+  <a
+    href="https://madiunkota.spmb.id/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-[16px] font-semibold hover:text-red-600 mr-20"
+  >
+    PPDB
+  </a>
+</div>
+
       </div>
     </div>
   );
