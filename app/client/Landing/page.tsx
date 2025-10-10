@@ -8,37 +8,110 @@ export default function Section1() {
   return (
     <>
       {/* === Section 1 === */}
-      <section className="w-full bg-white py-16">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
-          {/* Kiri - Teks */}
-          <div className="flex-1">
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight text-gray-900 mb-6">
-              <span className="block">Selamat</span>
-              <span className="block">Datang di SDN</span>
-              <span className="block">01 Manguharjo</span>
-              <span className="block">Kota Madiun</span>
-            </h1>
-            <p className="text-gray-600 leading-relaxed">
-              Penjelasan Penjelasan Penjelasan v Penjelasan Penjelasan Penjelasan
-              Penjelasan Penjelasan Penjelasan Penjelasan Penjelasan Penjelasan
-              Penjelasan Penjelasan Penjelasan
-            </p>
-          </div>
+      <section
+        className="relative h-[90vh] w-full bg-cover bg-center flex flex-col justify-center items-center text-center text-white"
+        style={{
+          backgroundImage: "url('/coba1.png')", // ubah sesuai nama gambar kamu
+          marginTop: "0px", // agar tidak menutupi navbar
+        }}
+      >
+        {/* Overlay gelap biar teks lebih jelas */}
+        <div className="absolute inset-0 bg-black/50"></div>
 
-          {/* Kanan - Ilustrasi */}
-          <div className="flex-1 flex justify-center">
-            <Image
-              src="/logosd.png"
-              alt="Logo Sekolah"
-              width={500}
-              height={500}
-              className="max-w-full h-auto"
-            />
-          </div>
+        {/* Konten di tengah */}
+        <div className="relative z-10 flex flex-col items-center px-4">
+          {/* Logo Sekolah */}
+          <Image
+            src="/logosd.png"
+            alt="Logo Sekolah"
+            width={180}
+            height={180}
+            className="mb-6 drop-shadow-lg"
+          />
+
+          {/* Nama Sekolah */}
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+            SD NEGERI 01 MANGUHARJO
+          </h1>
+
+          {/* Deskripsi */}
+          <p className="text-lg md:text-xl font-medium mb-8 max-w-2xl">
+            Salah Satu SD Terbaik Yang Ada Di Kota Madiun
+          </p>
+
+          {/* Tombol */}
+          <Link
+            href="/client/profilesekolah"
+            className="border-2 border-white text-white px-6 py-2 rounded-full text-lg font-semibold hover:bg-white hover:text-black transition-all"
+          >
+            TENTANG KAMI →
+          </Link>
         </div>
       </section>
 
-     {/* === Section 2 === */}
+
+{/* === Section 2 === */}
+<section className="bg-white py-16">
+  <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 px-6 md:px-12">
+    
+    {/* === Kiri - Sambutan Kepala Sekolah === */}
+    <div className="bg-white rounded-2xl shadow-lg p-10 flex flex-col justify-center">
+      <div className="flex items-center gap-6">
+        {/* Foto Kepala Sekolah */}
+        <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 flex-shrink-0">
+          <Image
+            src="/kepalasekolah.png"
+            alt="Kepala Sekolah"
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        {/* Sambutan */}
+        <div>
+          <h4 className="text-xl font-bold text-gray-900 mb-1">
+            Sudarmadi S.Pd.
+          </h4>
+          <p className="text-green-600 font-medium mb-3">Kepala Sekolah</p>
+          <p className="text-gray-700 leading-relaxed text-M">
+              Assalamu’alaikum warahmatullahi wabarakatuh.
+              Puji syukur ke hadirat Allah SWT atas rahmat dan karunia-Nya.
+              Website ini hadir sebagai sarana informasi dan komunikasi antara sekolah, peserta didik, serta masyarakat.
+              Semoga menjadi langkah menuju pendidikan yang unggul dan berkarakter.
+           
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* === Kanan - Data Peserta Didik === */}
+    <div className="bg-gradient-to-r from-red-700 to-red-900 rounded-2xl shadow-lg text-white flex flex-col justify-center px-10 py-12">
+      <h2 className="text-lg font-semibold mb-6 opacity-90">
+        Data Peserta Didik SDN 01 Manguharjo
+      </h2>
+
+      <div className="grid grid-cols-3 gap-6 text-center">
+        <div>
+          <h3 className="text-4xl font-bold">691</h3>
+          <p className="mt-1 text-sm opacity-90">Total Siswa</p>
+        </div>
+        <div>
+          <h3 className="text-4xl font-bold">350</h3>
+          <p className="mt-1 text-sm opacity-90">Laki-laki</p>
+        </div>
+        <div>
+          <h3 className="text-4xl font-bold">341</h3>
+          <p className="mt-1 text-sm opacity-90">Perempuan</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+     {/* === Section 3 === */}
 <section className="bg-white py-16">
   <h1 className="text-3xl font-bold mb-8 text-center">
     KEUNGGULAN SDN 01 MANGUHARJO <br /> KOTA MADIUN
@@ -46,7 +119,7 @@ export default function Section1() {
 
   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
     {/* Card 1 */}
-    <div className="bg-[#D7A298] rounded-lg p-4 flex flex-col items-center">
+    <div className="bg-red-800 rounded-lg p-4 flex flex-col items-center">
       <div className="bg-white rounded-lg shadow-md p-6 w-full h-full flex flex-col items-center">
         <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded mb-4">
           UNGGUL DALAM PRESTASI AKADEMIK
@@ -67,7 +140,7 @@ export default function Section1() {
     </div>
 
     {/* Card 2 */}
-    <div className="bg-[#D7A298] rounded-lg p-4 flex flex-col items-center">
+    <div className="bg-red-800 rounded-lg p-4 flex flex-col items-center">
       <div className="bg-white rounded-lg shadow-md p-6 w-full h-full flex flex-col items-center">
         <span className="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded mb-4">
           UNGGUL DALAM PRESTASI NON-AKADEMIK
@@ -88,11 +161,11 @@ export default function Section1() {
     </div>
 
     {/* Card 3 */}
-    <div className="bg-[#D7A298] rounded-lg p-4 flex flex-col items-center">
+    <div className="bg-red-800 rounded-lg p-4 flex flex-col items-center">
       <div className="bg-white rounded-lg shadow-md p-6 w-full h-full flex flex-col items-center">
         <span className="bg-red-500 text-white text-sm font-semibold px-3 py-1 rounded mb-4">
           UNGGUL DALAM PENDIDIKAN BERKARAKTER
-        </span>8 
+        </span>
         <Image
           src="/teacher.png"
           width={128}
@@ -109,7 +182,7 @@ export default function Section1() {
     </div>
   </div>
 </section>
-<section id="section-3">
+<section id="section-4">
       {/* Wrapper dengan background gradient */}
       <div className="py-16 px-bg-gradient-to-b from-white via-[#D7A298] to-white">
         {/* Judul + deskripsi */}
