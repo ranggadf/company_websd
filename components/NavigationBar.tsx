@@ -52,13 +52,22 @@ export default function NavigationBar() {
               {dropdownOpen && (
                 <div className="absolute top-full left-0 mt-2 bg-white shadow-lg rounded-md w-[180px] p-2 z-50">
                   <ul className="flex flex-col gap-2">
-                    <Link href="/client/profilesekolah" className="hover:text-red-600">
+                    <Link
+                      href="/client/profilesekolah"
+                      className="hover:text-red-600"
+                    >
                       Profile Sekolah
                     </Link>
-                    <Link href="/Fasilitas" className="hover:text-red-600">
+                    <Link
+                      href="/client/Fasilitas"
+                      className="hover:text-red-600"
+                    >
                       Fasilitas
                     </Link>
-                    <Link href="/visi-misi" className="hover:text-red-600">
+                    <Link
+                      href="/client/visimisi"
+                      className="hover:text-red-600"
+                    >
                       Visi & Misi
                     </Link>
                     <Link href="/guru" className="hover:text-red-600">
@@ -82,7 +91,7 @@ export default function NavigationBar() {
               Ekstrakulikuler
             </Link>
             <Link
-              href="/hubungi-kami"
+              href="/client/hubungi"
               className="text-[16px] font-semibold hover:text-red-600"
             >
               Hubungi Kami
