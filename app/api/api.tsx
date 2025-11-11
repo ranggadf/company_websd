@@ -7,6 +7,7 @@ export const apiEndpoints = {
   GETLANDING: `${api_url}/getLanding`,
   GETBERITA: `${api_url}/getBerita`,
   GETFASILITAS: `${api_url}/getFasilitas`,
+    ADDVisitor: `${api_url}/addVisitor`,
 
 
 

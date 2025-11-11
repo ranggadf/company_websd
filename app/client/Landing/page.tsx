@@ -38,6 +38,13 @@ interface FasilitasItem {
   gambar: string;
 }
 
+ useEffect(() => {
+    // kirim data visitor saat pengunjung membuka website
+    axios.post(apiEndpoints.ADDVisitor).catch((err) => {
+      console.error("Gagal mencatat visitor:", err);
+    });
+  }, []);
+
 useEffect(() => {
   const fetchFasilitas = async () => {
     try {
