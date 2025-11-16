@@ -10,7 +10,7 @@ interface FasilitasItem {
   id: number;
   judul: string;
   deskripsi: string;
-  gambar: string;
+  Gambar: string;
 }
 
 export default function Fasilitas() {
@@ -68,9 +68,9 @@ export default function Fasilitas() {
                 key={item.id}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition"
               >
-                {item.gambar && (
+                {item.Gambar && (
                   <Image
-                    src={`${image_url}/${item.gambar}`}
+                    src={`${image_url}/${item.Gambar}`}
                     alt={item.judul}
                     width={400}
                     height={400}

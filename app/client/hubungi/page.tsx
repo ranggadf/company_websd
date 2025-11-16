@@ -1,6 +1,10 @@
 "use client";
+
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { apiEndpoints } from "@/app/api/api";
 
 // --- Ikon SVG ---
 const PhoneIcon = () => (
@@ -43,8 +47,29 @@ const TiktokIcon = () => (
   </svg>
 );
 
-// --- Komponen Halaman Utama ---
+// --- Halaman Hubungi Kami ---
 export default function HubungiKamiPage() {
+  const [hubungi, setHubungi] = useState<any>(null);
+
+const fetchData = async () => {
+  try {
+    const res = await axios.get(apiEndpoints.GETHubungiKami);
+
+    if (Array.isArray(res.data) && res.data.length > 0) {
+      setHubungi(res.data[0]); // ambil objek pertama
+    } else {
+      console.error("Data hubungi kosong:", res.data);
+    }
+
+  } catch (error) {
+    console.error("Error fetching hubungi kami:", error);
+  }
+};
+
+useEffect(() => {
+  fetchData();
+}, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -55,16 +80,11 @@ export default function HubungiKamiPage() {
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 100 },
-    },
+    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans">
-      {/* Judul Halaman */}
       <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 md:p-10">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -76,12 +96,10 @@ export default function HubungiKamiPage() {
             Hubungi Kami
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Silakan hubungi kami jika ada pertanyaan atau informasi yang
-            dibutuhkan. Kami siap membantu Anda.
+            Silakan hubungi kami jika ada pertanyaan atau informasi yang diperlukan.
           </p>
         </motion.div>
 
-        {/* Kartu Konten */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -91,10 +109,12 @@ export default function HubungiKamiPage() {
           {/* Informasi Kontak */}
           <motion.div
             variants={itemVariants}
-            whileHover={{ scale: 1.03, y: -5, transition: { duration: 0.2 } }}
+            whileHover={{ scale: 1.03, y: -5 }}
             className="bg-red-800 text-white backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
           >
-            <h2 className="text-3xl font-bold mb-8 text-center">Informasi Kontak</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              {hubungi?.judul || "Memuat..."}
+            </h2>
 
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
@@ -103,7 +123,7 @@ export default function HubungiKamiPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">Whatsapp</h3>
-                  <p>+62 818-0411-6347</p>
+                  <p>{hubungi?.no_telp || "-"}</p>
                 </div>
               </div>
 
@@ -113,7 +133,7 @@ export default function HubungiKamiPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">Email</h3>
-                  <p>sdnmanguharjo@gmail.com</p>
+                  <p>{hubungi?.email || "-"}</p>
                 </div>
               </div>
 
@@ -123,20 +143,18 @@ export default function HubungiKamiPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">Alamat</h3>
-                  <p>
-                    Jl. Hayam Wuruk No.06, Manguharjo, Kec. Manguharjo, Kota
-                    Madiun, Jawa Timur 63127
-                  </p>
+                  <p>{hubungi?.alamat || "-"}</p>
                 </div>
               </div>
             </div>
 
             <motion.a
-              href="https://www.google.com/maps/search/?api=1&query=Jl.+Hayam+Wuruk+No.06,+Manguharjo,+Kota+Madiun"
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                hubungi?.alamat || ""
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               className="mt-10 block w-full bg-white text-red-800 text-center font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
             >
               Buka di Maps
@@ -146,12 +164,10 @@ export default function HubungiKamiPage() {
           {/* Sosial Media */}
           <motion.div
             variants={itemVariants}
-            whileHover={{ scale: 1.03, y: -5, transition: { duration: 0.2 } }}
+            whileHover={{ scale: 1.03, y: -5 }}
             className="bg-red-800 text-white backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
           >
-            <h2 className="text-3xl font-bold mb-8 text-center">
-              Follow Sosial Media Kami
-            </h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">Follow Sosial Media Kami</h2>
 
             <div className="space-y-4">
               <motion.a
@@ -166,7 +182,7 @@ export default function HubungiKamiPage() {
               </motion.a>
 
               <motion.a
-                href="https://youtube.com/@sdn01manguharjomadiun13?si=g1KEwXYXd53_5BVs"
+                href="https://youtube.com/@sdn01manguharjomadiun13"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05, x: 5 }}
@@ -177,7 +193,7 @@ export default function HubungiKamiPage() {
               </motion.a>
 
               <motion.a
-                href="https://www.tiktok.com/@sdnmanguharjoesma?_s=from_webapp=1&sender_device=pc"
+                href="https://www.tiktok.com/@sdnmanguharjoesma"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.05, x: 5 }}
@@ -191,7 +207,6 @@ export default function HubungiKamiPage() {
         </motion.div>
       </main>
 
-      {/* Footer Full Width */}
       <div className="-mx-4 sm:-mx-6 md:-mx-10">
         <Footer />
       </div>

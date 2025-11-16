@@ -1,227 +1,291 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Image from "next/image";
 import Footer from "@/components/Footer";
+import { apiEndpoints, image_url } from "@/app/api/api";
+import { motion } from "framer-motion";
 
 export default function Profil() {
+  interface ProfileItem {
+    id: number;
+    section: string;
+    judul: string;
+    konten: string;
+    gambar: string;
+  }
+
+  interface KontakItem {
+    id: number;
+    section: string;
+    judul: string;
+    konten: string;
+    gambar: string;
+    email: string;
+    alamat: string;
+    no_telp: string;
+  }
+
+  const [sejarah, setSejarah] = useState<ProfileItem | null>(null);
+  const [programs, setPrograms] = useState<ProfileItem[]>([]);
+  const [akreditasi, setAkreditasi] = useState<ProfileItem | null>(null);
+  const [kontak, setKontak] = useState<KontakItem | null>(null);
+
+  const [loading, setLoading] = useState(true);
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(apiEndpoints.GETProfileSekolah);
+      const arrayData: any[] = Array.isArray(response.data) ? response.data : [];
+
+      setSejarah(arrayData.find((item) => item.section?.toLowerCase() === "sejarah") || null);
+      setPrograms(arrayData.filter((item) => item.section?.toLowerCase() === "program") || []);
+      setAkreditasi(arrayData.find((item) => item.section?.toLowerCase() === "akreditasi") || null);
+      setKontak(arrayData.find((item) => item.section?.toLowerCase() === "kontak") || null);
+    } catch (err) {
+      console.error("Gagal mengambil data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <>
       <main className="pt-1">
-        {/* Section 1 - Judul */}
+
+        {/* ==================== SECTION TITLE ===================== */}
         <section className="relative bg-red-800 bg-center h-64 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-              PROFILE SDN 01 MANGUHARJO KOTA MADIUN
-            </h1>
-          </div>
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-center"
+          >
+            {loading ? (
+              <div className="w-64 h-10 bg-red-700 rounded-lg animate-pulse" />
+            ) : (
+              <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
+                PROFILE SDN 01 MANGUHARJO KOTA MADIUN
+              </h1>
+            )}
+          </motion.div>
         </section>
 
-        {/* Section 3 - Sejarah Sekolah */}
-        <section className="container mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* ==================== SECTION SEJARAH ===================== */}
+        <motion.section
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="container mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
+        >
           <div>
-            <h2 className="text-2xl md:text-4xl font-bold text-red-800 mb-4">
-              Sejarah Sekolah
-            </h2>
-            <p className="text-gray-700 text-xl leading-relaxed">
-              SDN 01 Manguharjo Kota Madiun berdiri sejak tahun XXXX. Sejak awal
-              berdirinya, sekolah ini telah menjadi salah satu lembaga pendidikan
-              dasar yang berkomitmen memberikan layanan pendidikan terbaik kepada
-              masyarakat. Dengan visi dan misi yang kuat, SDN 01 Manguharjo terus
-              berkembang dalam kualitas akademik maupun non-akademik.
-            </p>
+            {loading ? (
+              <>
+                <div className="w-48 h-8 bg-gray-300 rounded-lg animate-pulse mb-4" />
+                <div className="w-full h-32 bg-gray-200 rounded-lg animate-pulse" />
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl md:text-4xl font-bold text-red-800 mb-4">
+                  {sejarah?.judul}
+                </h2>
+                <p className="text-gray-700 text-xl leading-relaxed">
+                  {sejarah?.konten}
+                </p>
+              </>
+            )}
           </div>
 
           <div className="flex justify-center">
-            <img
-              src="/p.jpg"
-              alt="Sejarah SDN 01 Manguharjo"
-              className="rounded-lg shadow-lg w-full md:w-4/5"
-            />
+            {loading ? (
+              <div className="w-full md:w-4/5 h-64 bg-gray-300 rounded-lg animate-pulse" />
+            ) : sejarah?.gambar ? (
+              <Image
+                src={`${image_url}/${sejarah.gambar}`}
+                alt={sejarah?.judul ?? ""}
+                width={600}
+                height={400}
+                className="rounded-lg shadow-lg w-full md:w-4/5 object-cover"
+                unoptimized
+              />
+            ) : null}
           </div>
-        </section>
+        </motion.section>
 
-        {/* Section Baru - Program Sekolah */}
-        <section className="container mx-auto px-4 py-16">
+        {/* ==================== SECTION PROGRAM ===================== */}
+        <motion.section
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="container mx-auto px-4 py-16"
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-center text-red-800 mb-12">
             Program Unggulan Sekolah
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1 */}
-            <div className="bg-red-800 text-white rounded-2xl p-8 text-center shadow-lg hover:scale-105 transition-transform duration-300">
-              <div className="flex justify-center mb-4">
-                <div className="bg-yellow-500/20 p-4 rounded-full">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-10 w-10 text-yellow-400 mx-auto"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+            {loading
+              ? [...Array(3)].map((_, i) => (
+                  <div key={i} className="bg-gray-200 rounded-2xl p-8 animate-pulse h-64" />
+                ))
+              : programs.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="bg-red-800 text-white rounded-2xl p-8 text-center shadow-lg hover:scale-105 transition-transform duration-300"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M17 20h5V4H2v16h5m10 0v-6H7v6"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="text-2xl font-semibold mb-2">Sekolah Ramah Anak</h3>
-              <p className="text-gray-200">
-                Bebas Bullying dan Berkomunitas Sehat
-              </p>
-            </div>
+                    <div className="flex justify-center mb-4">
+                      <div className="bg-yellow-500/20 p-4 rounded-full">
+                        {item.gambar ? (
+                          <Image
+                            src={`${image_url}/${item.gambar}`}
+                            alt={item?.judul ?? ""}
+                            width={80}
+                            height={80}
+                            className="rounded-full object-cover"
+                            unoptimized
+                          />
+                        ) : (
+                          <div className="w-20 h-20 bg-gray-300 rounded-full" />
+                        )}
+                      </div>
+                    </div>
 
-            {/* Card 2 */}
-            <div className="bg-red-800 text-white rounded-2xl p-8 text-center shadow-lg hover:scale-105 transition-transform duration-300">
-              <div className="flex justify-center mb-4">
-                <div className="bg-yellow-500/20 p-4 rounded-full">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-10 w-10 text-yellow-400 mx-auto"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 14l9-5-9-5-9 5 9 5z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5a12.083 12.083 0 01-6.16-10.922L12 14z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="text-2xl font-semibold mb-2">Sekolah Budaya</h3>
-              <p className="text-gray-200">
-                Berwawasan Digital berinteraksi Budaya Lokal
-              </p>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-red-800 text-white rounded-2xl p-8 text-center shadow-lg hover:scale-105 transition-transform duration-300">
-              <div className="flex justify-center mb-4">
-                <div className="bg-yellow-500/20 p-4 rounded-full">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-10 w-10 text-yellow-400 mx-auto"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 12l2 2l4 -4"
-                    />
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="9"
-                      strokeWidth="2"
-                      stroke="currentColor"
-                      fill="none"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <h3 className="text-2xl font-semibold mb-2">Sekolah Adiwiyata</h3>
-              <p className="text-gray-200">
-                Hijau dan Segar serta Rimbun di Semua Sudut
-              </p>
-            </div>
+                    <h3 className="text-2xl font-semibold mb-2">
+                      {item.judul}
+                    </h3>
+                    <p className="text-gray-200">{item.konten}</p>
+                  </motion.div>
+                ))}
           </div>
-        </section>
+        </motion.section>
 
-   {/* 🔹 Section Baru - Akreditasi Sekolah */}
-<section className="bg-gray-50 py-16 px-6">
-  <div className="container mx-auto text-center">
-    <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-8">
-      Akreditasi Sekolah
-    </h2>
-    <p className="text-gray-700 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-      SDN 01 Manguharjo Kota Madiun telah memperoleh{" "}
-      <span className="font-bold text-red-800">Akreditasi A</span> dari{" "}
-      <span className="font-semibold">
-        Badan Akreditasi Nasional Sekolah/Madrasah (BAN-S/M)
-      </span>
-      . Prestasi ini menjadi bukti nyata komitmen sekolah dalam menjaga mutu
-      pendidikan serta memberikan pelayanan terbaik kepada peserta didik dan
-      masyarakat.
-    </p>
+        {/* ==================== SECTION AKREDITASI ===================== */}
+        <motion.section
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="bg-gray-50 py-16 px-6"
+        >
+          <div className="container mx-auto text-center">
+            {loading ? (
+              <>
+                <div className="w-64 h-8 bg-gray-300 rounded-lg animate-pulse mx-auto mb-8" />
+                <div className="w-full md:w-4/5 lg:w-3/4 h-72 bg-gray-300 rounded-2xl animate-pulse mx-auto" />
+              </>
+            ) : (
+              <>
+                <h2 className="text-3xl md:text-4xl font-bold text-red-800 mb-8">
+                  {akreditasi?.judul}
+                </h2>
+                <p className="text-gray-700 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+                  {akreditasi?.konten}
+                </p>
+                <div className="flex justify-center mt-12">
+                  {akreditasi?.gambar && (
+                    <Image
+                      src={`${image_url}/${akreditasi.gambar}`}
+                      alt={akreditasi?.judul ?? ""}
+                      width={800}
+                      height={500}
+                      className="rounded-2xl shadow-2xl w-full md:w-4/5 lg:w-3/4 object-cover"
+                      unoptimized
+                    />
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </motion.section>
 
-    <div className="flex justify-center mt-12">
-      <img
-        src="/akreditasi.png"
-        alt="Sertifikat Akreditasi Sekolah"
-        className="rounded-2xl shadow-2xl w-full md:w-4/5 lg:w-3/4 transition-transform duration-300 hover:scale-105"
-      />
-    </div>
-  </div>
-</section>
-
-        {/* Section 4 - Kontak */}
-        <section className="container mx-auto py-16 px-4 flex flex-col md:flex-row gap-6">
+        {/* ==================== SECTION KONTAK ===================== */}
+        <motion.section
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="container mx-auto py-16 px-4 flex flex-col md:flex-row gap-8"
+        >
           <div className="w-full md:w-1/2">
-            <h2 className="text-4xl text-red-800 font-bold leading-tight">
-              Ingin tahu lebih banyak tentang SDN 01 Manguharjo Kota Madiun?
-            </h2>
-            <p className="text-gray-600 text-xl mt-4">
-              Kami siap memberikan informasi seputar profil sekolah, kegiatan
-              belajar mengajar, maupun penerimaan peserta didik baru. Jangan
-              ragu untuk menghubungi kami melalui kontak di samping ini.
-            </p>
+            {loading ? (
+              <>
+                <div className="w-40 h-10 bg-gray-300 rounded-lg animate-pulse mb-4" />
+                <div className="w-full h-20 bg-gray-200 rounded-lg animate-pulse" />
+              </>
+            ) : (
+              <>
+                <h2 className="text-4xl text-red-800 font-bold leading-tight">
+                  {kontak?.judul}
+                </h2>
+
+                <p className="text-gray-600 text-xl mt-4">
+                  {kontak?.konten}
+                </p>
+              </>
+            )}
           </div>
 
           <div className="w-full md:w-1/2 flex flex-col gap-6">
-            {[
-              {
-                title: "Location",
-                value: "JL.Hayam Wuruk no 06 Kel.Manguharjo Kota Madiun",
-              },
-              {
-                title: "Email Address",
-                value: "sdn01manguharjo@gmail.com",
-              },
-              {
-                title: "Phone number",
-                value: "[0351]467898",
-              },
-            ].map((item, index) => (
-              <div key={index} className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-red-800 flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+            {loading
+              ? [...Array(3)].map((_, i) => (
+                  <div key={i} className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-gray-300 rounded-full animate-pulse" />
+                    <div className="w-1/2 h-6 bg-gray-300 rounded-lg animate-pulse" />
+                  </div>
+                ))
+              : [
+                  { title: "Alamat", value: kontak?.alamat ?? "" },
+                  { title: "Email", value: kontak?.email ?? "" },
+                  { title: "Telepon", value: kontak?.no_telp ?? "" },
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    className="flex items-start gap-4"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5 12h14M12 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">{item.title}</h3>
-                  <p className="text-gray-600">{item.value}</p>
-                </div>
-              </div>
-            ))}
+                    <div className="w-12 h-12 rounded-full bg-red-800 flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 12h14M12 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">{item.title}</h3>
+                      <p className="text-gray-600">{item.value}</p>
+                    </div>
+                  </motion.div>
+                ))}
           </div>
-        </section>
+        </motion.section>
       </main>
 
-      {/* Footer */}
       <Footer />
     </>
   );
