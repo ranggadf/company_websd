@@ -7,11 +7,13 @@ export const apiEndpoints = {
   GETLANDING: `${api_url}/getLanding`,
   GETBERITA: `${api_url}/getBerita`,
   GETFASILITAS: `${api_url}/getFasilitas`,
-    ADDVisitor: `${api_url}/addVisitor`,
+  ADDVisitor: `${api_url}/addVisitor`,
   GETProfileSekolah: `${api_url}/getprofilesekolah`,
   GETEkskul: `${api_url}/getEkskul`,
   GETHubungiKami: `${api_url}/gethubungikami`,
-GETVisiMisi: `${api_url}/getvisimisi`,
+  GETVisiMisi: `${api_url}/getvisimisi`,
+  GETGURU: `${api_url}/guru`, 
+  GETGURU_BY_KATEGORI_ALL: `${api_url}/getGuruByKategoriAll`,
 
 
 
