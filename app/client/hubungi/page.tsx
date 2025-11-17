@@ -1,7 +1,7 @@
 "use client";
+
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
-import Footer from "@/components/Footer"; // Pastikan path import ini benar
 
 // --- Ikon SVG ---
 const PhoneIcon = () => (
@@ -102,8 +102,29 @@ const TiktokIcon = () => (
   </svg>
 );
 
-// --- Komponen Halaman Utama ---
+// --- Halaman Hubungi Kami ---
 export default function HubungiKamiPage() {
+  const [hubungi, setHubungi] = useState<any>(null);
+
+const fetchData = async () => {
+  try {
+    const res = await axios.get(apiEndpoints.GETHubungiKami);
+
+    if (Array.isArray(res.data) && res.data.length > 0) {
+      setHubungi(res.data[0]); // ambil objek pertama
+    } else {
+      console.error("Data hubungi kosong:", res.data);
+    }
+
+  } catch (error) {
+    console.error("Error fetching hubungi kami:", error);
+  }
+};
+
+useEffect(() => {
+  fetchData();
+}, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -114,14 +135,11 @@ export default function HubungiKamiPage() {
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring", stiffness: 100 },
-    },
+    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
   };
 
   return (
+<<<<<<< HEAD
     <div className="bg-gradient-to-br from-rose-50 via-stone-50 to-pink-100 min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 font-sans">
       <motion.div
         initial={{ opacity: 0, y: -30 }}
@@ -145,10 +163,15 @@ export default function HubungiKamiPage() {
         className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl w-full"
       >
         {/* Kolom Informasi Kontak */}
+=======
+    <div className="flex flex-col min-h-screen bg-white font-sans">
+      <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 md:p-10">
+>>>>>>> ecbc9378b28e185828a4471b9d6be3928c0db03f
         <motion.div
           variants={itemVariants}
           className="bg-white/60 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
         >
+<<<<<<< HEAD
           <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             Informasi Kontak
           </h2>
@@ -163,6 +186,61 @@ export default function HubungiKamiPage() {
                   Whatsapp
                 </h3>
                 <p className="text-gray-600">+62 818-0411-6347</p>
+=======
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
+            Hubungi Kami
+          </h1>
+          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            Silakan hubungi kami jika ada pertanyaan atau informasi yang diperlukan.
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl w-full"
+        >
+          {/* Informasi Kontak */}
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ scale: 1.03, y: -5 }}
+            className="bg-red-800 text-white backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
+          >
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              {hubungi?.judul || "Memuat..."}
+            </h2>
+
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <div className="bg-white/20 text-white rounded-full p-3">
+                  <PhoneIcon />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Whatsapp</h3>
+                  <p>{hubungi?.no_telp || "-"}</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="bg-white/20 text-white rounded-full p-3">
+                  <MailIcon />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Email</h3>
+                  <p>{hubungi?.email || "-"}</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-4">
+                <div className="bg-white/20 text-white rounded-full p-3">
+                  <LocationIcon />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Alamat</h3>
+                  <p>{hubungi?.alamat || "-"}</p>
+                </div>
+>>>>>>> ecbc9378b28e185828a4471b9d6be3928c0db03f
               </div>
             </div>
 
@@ -213,17 +291,28 @@ export default function HubungiKamiPage() {
 
           <div className="space-y-4">
             <motion.a
+<<<<<<< HEAD
               href="https://www.instagram.com/sdnmanguharjo/"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05, x: 5 }}
               className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+=======
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                hubungi?.alamat || ""
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              className="mt-10 block w-full bg-white text-red-800 text-center font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
+>>>>>>> ecbc9378b28e185828a4471b9d6be3928c0db03f
             >
               <InstagramIcon />
               <span className="ml-4 font-semibold text-lg text-gray-700">
                 Instagram
               </span>
             </motion.a>
+<<<<<<< HEAD
             <motion.a
               href="https://youtube.com/@sdn01manguharjomadiun13?si=g1KEwXYXd53_5BVs"
               target="_blank"
@@ -251,6 +340,59 @@ export default function HubungiKamiPage() {
           </div>
         </motion.div>
       </motion.div>
+=======
+          </motion.div>
+
+          {/* Sosial Media */}
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ scale: 1.03, y: -5 }}
+            className="bg-red-800 text-white backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
+          >
+            <h2 className="text-3xl font-bold mb-8 text-center">Follow Sosial Media Kami</h2>
+
+            <div className="space-y-4">
+              <motion.a
+                href="https://www.instagram.com/sdnmanguharjo/"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, x: 5 }}
+                className="flex items-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-200"
+              >
+                <InstagramIcon />
+                <span className="ml-4 font-semibold text-lg">Instagram</span>
+              </motion.a>
+
+              <motion.a
+                href="https://youtube.com/@sdn01manguharjomadiun13"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, x: 5 }}
+                className="flex items-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-200"
+              >
+                <YoutubeIcon />
+                <span className="ml-4 font-semibold text-lg">YouTube</span>
+              </motion.a>
+
+              <motion.a
+                href="https://www.tiktok.com/@sdnmanguharjoesma"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, x: 5 }}
+                className="flex items-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-200"
+              >
+                <TiktokIcon />
+                <span className="ml-4 font-semibold text-lg">TikTok</span>
+              </motion.a>
+            </div>
+          </motion.div>
+        </motion.div>
+      </main>
+
+      <div className="-mx-4 sm:-mx-6 md:-mx-10">
+        <Footer />
+      </div>
+>>>>>>> ecbc9378b28e185828a4471b9d6be3928c0db03f
     </div>
   );
 }

@@ -1,35 +1,20 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import axios from "axios";
-import { apiEndpoints } from "@/app/api/api";
-
-interface NavbarItem {
-  id: number;
-  label: string;
-  path_to: string;
-}
 
 export default function NavigationBar() {
-  const [dropdownItems, setDropdownItems] = useState<NavbarItem[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 🔹 Ambil data dropdown dari backend
-  useEffect(() => {
-    const fetchDropdown = async () => {
-      try {
-        const res = await axios.get(apiEndpoints.GETNAVBAR);
-        // Pastikan respons sesuai (cek di console bila beda)
-        setDropdownItems(res.data.data || res.data);
-      } catch (error) {
-        console.error("Gagal memuat data dropdown navbar:", error);
-      }
-    };
-    fetchDropdown();
-  }, []);
+  // 🔹 Data dropdown statik
+  const dropdownItems = [
+    { id: 1, label: "Profil Sekolah", path_to: "/client/profilesekolah" },
+    { id: 2, label: "Visi & Misi", path_to: "/client/visimisi" },
+    { id: 3, label: "Data Guru & Staff", path_to: "/client/guru" },
+    { id: 4, label: "Fasilitas", path_to: "/client/Fasilitas" },
+  ];
 
   // 🔹 Dropdown hover handler
   const handleMouseEnter = () => {
@@ -58,9 +43,9 @@ export default function NavigationBar() {
             </Link>
           </div>
 
-          {/* === Menu Utama (Manual) === */}
+          {/* === Menu Utama (Statik) === */}
           <div className="hidden md:flex items-center gap-8">
-            {/* Dropdown Profile (Dinamis dari Backend) */}
+            {/* Dropdown Profile */}
             <div
               className="relative"
               onMouseEnter={handleMouseEnter}
@@ -92,7 +77,7 @@ export default function NavigationBar() {
               )}
             </div>
 
-            {/* Menu lainnya (manual) */}
+            {/* Menu lainnya */}
             <Link
               href="/client/berita"
               className="text-[16px] font-semibold hover:text-red-600 transition-colors duration-200"
