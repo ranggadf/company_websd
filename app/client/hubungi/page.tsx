@@ -1,10 +1,9 @@
 "use client";
-
+import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import Footer from "@/components/Footer"; // Pastikan path import ini benar
 
-// --- Kumpulan Ikon SVG ---
-
+// --- Ikon SVG ---
 const PhoneIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -103,8 +102,7 @@ const TiktokIcon = () => (
   </svg>
 );
 
-// --- Komponen Utama ---
-
+// --- Komponen Halaman Utama ---
 export default function HubungiKamiPage() {
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -124,144 +122,135 @@ export default function HubungiKamiPage() {
   };
 
   return (
-    // Container utama menggunakan flex-col
-    <div className="bg-gradient-to-br from-rose-50 via-stone-50 to-pink-100 min-h-screen w-full flex flex-col font-sans">
-      {/* Konten dibungkus di dalam <main> dengan flex-grow */}
-      <main className="flex-grow w-full flex flex-col items-center justify-center p-4 sm:p-6 md:p-10">
+    <div className="bg-gradient-to-br from-rose-50 via-stone-50 to-pink-100 min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 font-sans">
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="text-center mb-12"
+      >
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
+          Hubungi Kami
+        </h1>
+        <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+          Silakan hubungi kami jika ada pertanyaan atau informasi yang
+          dibutuhkan. Kami siap membantu Anda.
+        </p>
+      </motion.div>
+
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl w-full"
+      >
+        {/* Kolom Informasi Kontak */}
         <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="text-center mb-12"
+          variants={itemVariants}
+          className="bg-white/60 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
         >
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
-            Hubungi Kami
-          </h1>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Silakan hubungi kami jika ada pertanyaan atau informasi yang
-            dibutuhkan. Kami siap membantu Anda.
-          </p>
-        </motion.div>
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+            Informasi Kontak
+          </h2>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl w-full"
-        >
-          {/* Kolom Informasi Kontak */}
-          <motion.div
-            variants={itemVariants}
-            className="bg-white/60 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
-          >
-            <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-              Informasi Kontak
-            </h2>
-
-            <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <div className="bg-green-100 text-green-600 rounded-full p-3">
-                  <PhoneIcon />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg text-gray-700">
-                    Whatsapp
-                  </h3>
-                  <p className="text-gray-600">+62 818-0411-6347</p>
-                </div>
+          <div className="space-y-6">
+            <div className="flex items-start space-x-4">
+              <div className="bg-green-100 text-green-600 rounded-full p-3">
+                <PhoneIcon />
               </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-blue-100 text-blue-600 rounded-full p-3">
-                  <MailIcon />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg text-gray-700">Email</h3>
-                  <p className="text-gray-600">sdnmanguharjo@gmail.com</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-red-100 text-red-600 rounded-full p-3">
-                  <LocationIcon />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg text-gray-700">
-                    Alamat
-                  </h3>
-                  <p className="text-gray-600">
-                    Jl. Hayam Wuruk No.06, Manguharjo, Kec. Manguharjo, Kota
-                    Madiun, Jawa Timur 63127
-                  </p>
-                </div>
+              <div>
+                <h3 className="font-semibold text-lg text-gray-700">
+                  Whatsapp
+                </h3>
+                <p className="text-gray-600">+62 818-0411-6347</p>
               </div>
             </div>
 
+            <div className="flex items-start space-x-4">
+              <div className="bg-blue-100 text-blue-600 rounded-full p-3">
+                <MailIcon />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg text-gray-700">Email</h3>
+                <p className="text-gray-600">sdnmanguharjo@gmail.com</p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="bg-red-100 text-red-600 rounded-full p-3">
+                <LocationIcon />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg text-gray-700">Alamat</h3>
+                <p className="text-gray-600">
+                  Jl. Hayam Wuruk No.06, Manguharjo, Kec. Manguharjo, Kota
+                  Madiun, Jawa Timur 63127
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <motion.a
+            href="https://www.google.com/maps/search/?api=1&query=Jl.+Hayam+Wuruk+No.06,+Manguharjo,+Kota+Madiun"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="mt-10 block w-full bg-red-500 text-white text-center font-bold py-3 px-6 rounded-lg shadow-md hover:bg-red-600 transition-colors duration-300"
+          >
+            Buka di Maps
+          </motion.a>
+        </motion.div>
+
+        {/* Kolom Sosial Media */}
+        <motion.div
+          variants={itemVariants}
+          className="bg-white/60 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
+        >
+          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+            Follow Sosial Media Kami
+          </h2>
+
+          <div className="space-y-4">
             <motion.a
-              href="https://maps.app.goo.gl/tWp51v5d1QWkQ4vZA" // <-- Ganti dengan link Google Maps yang benar
+              href="https://www.instagram.com/sdnmanguharjo/"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="mt-10 block w-full bg-red-500 text-white text-center font-bold py-3 px-6 rounded-lg shadow-md hover:bg-red-600 transition-colors duration-300"
+              whileHover={{ scale: 1.05, x: 5 }}
+              className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
             >
-              Buka di Maps
+              <InstagramIcon />
+              <span className="ml-4 font-semibold text-lg text-gray-700">
+                Instagram
+              </span>
             </motion.a>
-          </motion.div>
-
-          {/* Kolom Sosial Media */}
-          <motion.div
-            variants={itemVariants}
-            className="bg-white/60 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
-          >
-            <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-              Follow Sosial Media Kami
-            </h2>
-
-            <div className="space-y-4">
-              <motion.a
-                href="https://www.instagram.com/sdnmanguharjo/"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, x: 5 }}
-                className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-              >
-                <InstagramIcon />
-                <span className="ml-4 font-semibold text-lg text-gray-700">
-                  Instagram
-                </span>
-              </motion.a>
-              <motion.a
-                href="https://youtube.com/@sdn01manguharjomadiun13?si=g1KEwXYXd53_5BVs"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, x: 5 }}
-                className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-              >
-                <YoutubeIcon />
-                <span className="ml-4 font-semibold text-lg text-gray-700">
-                  YouTube
-                </span>
-              </motion.a>
-              <motion.a
-                href="https://www.tiktok.com/@sdnmanguharjoesma?_s=from_webapp=1&sender_device=pc"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, x: 5 }}
-                className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-              >
-                <TiktokIcon />
-                <span className="ml-4 font-semibold text-lg text-gray-700">
-                  TikTok
-                </span>
-              </motion.a>
-            </div>
-          </motion.div>
+            <motion.a
+              href="https://youtube.com/@sdn01manguharjomadiun13?si=g1KEwXYXd53_5BVs"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05, x: 5 }}
+              className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+            >
+              <YoutubeIcon />
+              <span className="ml-4 font-semibold text-lg text-gray-700">
+                YouTube
+              </span>
+            </motion.a>
+            <motion.a
+              href="https://www.tiktok.com/@sdnmanguharjoesma?_s=from_webapp=1&sender_device=pc"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05, x: 5 }}
+              className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+            >
+              <TiktokIcon />
+              <span className="ml-4 font-semibold text-lg text-gray-700">
+                TikTok
+              </span>
+            </motion.a>
+          </div>
         </motion.div>
-      </main>
-
-      {/* Footer akan selalu berada di bawah */}
-      <Footer />
+      </motion.div>
     </div>
   );
 }

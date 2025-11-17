@@ -1,36 +1,56 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
+import axios from "axios";
+import { apiEndpoints } from "@/app/api/api";
+
+interface NavbarItem {
+  id: number;
+  label: string;
+  path_to: string;
+}
 
 export default function NavigationBar() {
+  const [dropdownItems, setDropdownItems] = useState<NavbarItem[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // 🔹 Ambil data dropdown dari backend
+  useEffect(() => {
+    const fetchDropdown = async () => {
+      try {
+        const res = await axios.get(apiEndpoints.GETNAVBAR);
+        // Pastikan respons sesuai (cek di console bila beda)
+        setDropdownItems(res.data.data || res.data);
+      } catch (error) {
+        console.error("Gagal memuat data dropdown navbar:", error);
+      }
+    };
+    fetchDropdown();
+  }, []);
+
+  // 🔹 Dropdown hover handler
   const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setDropdownOpen(true);
   };
-
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setDropdownOpen(false);
-    }, 300); // delay 300ms sebelum menutup
+    }, 200);
   };
 
   return (
     <div className="fixed top-0 left-0 w-full bg-white shadow-md py-3 px-6 z-50">
       <div className="flex justify-between items-center ml-20">
-        {/* Logo + Menu kiri */}
+        {/* === Logo === */}
         <div className="flex items-center gap-10">
-          {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
-                src="/logosd.png" // ganti sesuai path logo
+                src="/logosd.png"
                 width={50}
                 height={50}
                 alt="Logo Sekolah"
@@ -38,15 +58,15 @@ export default function NavigationBar() {
             </Link>
           </div>
 
-          {/* Menu */}
+          {/* === Menu Utama (Manual) === */}
           <div className="hidden md:flex items-center gap-8">
-            {/* Profile dropdown */}
+            {/* Dropdown Profile (Dinamis dari Backend) */}
             <div
               className="relative"
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <button className="text-[16px] font-semibold flex items-center gap-1 hover:text-red-600">
+              <button className="text-[16px] font-semibold flex items-center gap-1 hover:text-red-600 transition-colors duration-200">
                 Profile <ChevronDown size={16} />
               </button>
               {dropdownOpen && (
@@ -58,16 +78,10 @@ export default function NavigationBar() {
                     >
                       Profile Sekolah
                     </Link>
-                    <Link
-                      href="/client/Fasilitas"
-                      className="hover:text-red-600"
-                    >
+                    <Link href="/Fasilitas" className="hover:text-red-600">
                       Fasilitas
                     </Link>
-                    <Link
-                      href="/client/visimisi"
-                      className="hover:text-red-600"
-                    >
+                    <Link href="/visi-misi" className="hover:text-red-600">
                       Visi & Misi
                     </Link>
                     <Link href="/guru" className="hover:text-red-600">
@@ -78,20 +92,21 @@ export default function NavigationBar() {
               )}
             </div>
 
+            {/* Menu lainnya (manual) */}
             <Link
-              href="/berita"
-              className="text-[16px] font-semibold hover:text-red-600"
+              href="/client/berita"
+              className="text-[16px] font-semibold hover:text-red-600 transition-colors duration-200"
             >
               Berita
             </Link>
             <Link
-              href="/ekstrakulikuler"
-              className="text-[16px] font-semibold hover:text-red-600"
+              href="/client/ekstrakulikuler"
+              className="text-[16px] font-semibold hover:text-red-600 transition-colors duration-200"
             >
-              Ekstrakulikuler
+              Ekstrakurikuler
             </Link>
             <Link
-              href="/client/hubungi"
+              href="/hubungi-kami"
               className="text-[16px] font-semibold hover:text-red-600"
             >
               Hubungi Kami
@@ -99,14 +114,16 @@ export default function NavigationBar() {
           </div>
         </div>
 
-        {/* Menu kanan (PPDB) */}
+        {/* === Menu kanan (PPDB) === */}
         <div>
-          <Link
-            href="/ppdb"
-            className="text-[16px] font-semibold hover:text-red-600 mr-20"
+          <a
+            href="https://madiunkota.spmb.id/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[16px] font-semibold hover:text-red-600 mr-20 transition-colors duration-200"
           >
             PPDB
-          </Link>
+          </a>
         </div>
       </div>
     </div>
