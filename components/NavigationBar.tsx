@@ -2,13 +2,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 export default function NavigationBar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileDropdown, setMobileDropdown] = useState(false);
+
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 🔹 Data dropdown statik
   const dropdownItems = [
     { id: 1, label: "Profil Sekolah", path_to: "/client/profilesekolah" },
     { id: 2, label: "Visi & Misi", path_to: "/client/visimisi" },
@@ -16,7 +18,7 @@ export default function NavigationBar() {
     { id: 4, label: "Fasilitas", path_to: "/client/Fasilitas" },
   ];
 
-  // 🔹 Dropdown hover handler
+  // Hover — Desktop
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setDropdownOpen(true);
@@ -29,21 +31,14 @@ export default function NavigationBar() {
 
   return (
     <div className="fixed top-0 left-0 w-full bg-white shadow-md py-3 px-6 z-50">
-      <div className="flex justify-between items-center ml-20">
-        {/* === Logo === */}
-        <div className="flex items-center gap-10">
-          <div className="flex-shrink-0">
-            <Link href="/">
-              <Image
-                src="/logosd.png"
-                width={50}
-                height={50}
-                alt="Logo Sekolah"
-              />
-            </Link>
-          </div>
+      <div className="flex justify-between items-center">
+        {/* === LEFT: Logo + Menu === */}
+        <div className="flex items-center gap-8 ml-20">
+          <Link href="/">
+            <Image src="/logosd.png" width={50} height={50} alt="Logo Sekolah" />
+          </Link>
 
-          {/* === Menu Utama (Statik) === */}
+          {/* DESKTOP NAV */}
           <div className="hidden md:flex items-center gap-8">
             {/* Dropdown Profile */}
             <div
@@ -51,7 +46,7 @@ export default function NavigationBar() {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <button className="text-[16px] font-semibold flex items-center gap-1 hover:text-red-600 transition-colors duration-200">
+              <button className="text-[16px] font-semibold flex items-center gap-1 hover:text-red-600 transition">
                 Profile <ChevronDown size={16} />
               </button>
 
@@ -67,7 +62,7 @@ export default function NavigationBar() {
                     <li key={item.id}>
                       <Link
                         href={item.path_to}
-                        className="block px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150"
+                        className="block px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 transition"
                       >
                         {item.label}
                       </Link>
@@ -77,40 +72,105 @@ export default function NavigationBar() {
               </div>
             </div>
 
-            {/* Menu lainnya */}
+            {/* Menu lain */}
             <Link
               href="/client/berita"
-              className="text-[16px] font-semibold hover:text-red-600 transition-colors duration-200"
+              className="text-[16px] font-semibold hover:text-red-600"
             >
               Berita
             </Link>
             <Link
               href="/client/ekstrakulikuler"
-              className="text-[16px] font-semibold hover:text-red-600 transition-colors duration-200"
+              className="text-[16px] font-semibold hover:text-red-600"
             >
               Ekstrakurikuler
             </Link>
             <Link
               href="/client/hubungi"
-              className="text-[16px] font-semibold hover:text-red-600 transition-colors duration-200"
+              className="text-[16px] font-semibold hover:text-red-600"
             >
               Hubungi Kami
             </Link>
           </div>
         </div>
 
-        {/* === Menu kanan (PPDB) === */}
-        <div>
+        {/* === RIGHT: PPDB === */}
+        <div className="hidden md:block mr-10">
           <a
             href="https://madiunkota.spmb.id/"
             target="_blank"
-            rel="noopener noreferrer"
-            className="text-[16px] font-semibold hover:text-red-600 mr-20 transition-colors duration-200"
+            className="text-[16px] font-semibold hover:text-red-600"
           >
             PPDB
           </a>
         </div>
+
+        {/* === MOBILE BUTTON (Hamburger) === */}
+        <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
+          {mobileOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
       </div>
+
+      {/* === MOBILE MENU === */}
+      {mobileOpen && (
+        <div className="md:hidden mt-4 bg-white shadow-inner rounded-lg p-4 space-y-3">
+          {/* Dropdown Mobile (Click) */}
+          <div>
+            <button
+              onClick={() => setMobileDropdown(!mobileDropdown)}
+              className="w-full flex justify-between items-center text-[16px] font-semibold"
+            >
+              Profile <ChevronDown size={16} />
+            </button>
+
+            {mobileDropdown && (
+              <div className="mt-2 bg-gray-50 rounded-lg p-2">
+                {dropdownItems.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={item.path_to}
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-3 py-2 text-gray-700 hover:bg-gray-200 rounded"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Menu lain */}
+          <Link
+            href="/client/berita"
+            onClick={() => setMobileOpen(false)}
+            className="block text-[16px] font-semibold"
+          >
+            Berita
+          </Link>
+          <Link
+            href="/client/ekstrakulikuler"
+            onClick={() => setMobileOpen(false)}
+            className="block text-[16px] font-semibold"
+          >
+            Ekstrakurikuler
+          </Link>
+          <Link
+            href="/client/hubungi"
+            onClick={() => setMobileOpen(false)}
+            className="block text-[16px] font-semibold"
+          >
+            Hubungi Kami
+          </Link>
+
+          <a
+            href="https://madiunkota.spmb.id/"
+            target="_blank"
+            className="block text-[16px] font-semibold"
+          >
+            PPDB
+          </a>
+        </div>
+      )}
     </div>
   );
 }

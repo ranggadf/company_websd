@@ -22,8 +22,17 @@ export default function LandingPage() {
   // === LOGIC CAROUSEL SECTION 4 ===
 const [currentIndex, setCurrentIndex] = useState(0);
 const scrollRef = useRef<HTMLDivElement | null>(null);
+const [currentFasIndex, setCurrentFasIndex] = useState(0);
 
-const cardWidth = 350; // ukuran card (330px + gap)
+
+const cardWidth = typeof window !== "undefined"
+  ? window.innerWidth < 640
+    ? window.innerWidth - 40 // mobile
+    : window.innerWidth < 1024
+    ? 300                     // tablet
+    : 350                     // laptop
+  : 350;
+// ukuran card (330px + gap)
 
 const scrollLeft = () => {
   if (currentIndex > 0) {
@@ -35,6 +44,9 @@ const scrollLeft = () => {
     });
   }
 };
+
+
+
 
 const scrollRight = () => {
   if (currentIndex < section4.length - 1) {
@@ -54,6 +66,18 @@ const scrollRight = () => {
     deskripsi: string;
     Gambar: string;
   }
+  
+// AUTO SLIDE FASILITAS MOBILE
+useEffect(() => {
+  if (fasilitas.length === 0) return;
+
+  const interval = setInterval(() => {
+    setCurrentFasIndex((prev) => (prev + 1) % fasilitas.length);
+  }, 3500);
+
+  return () => clearInterval(interval);
+}, [fasilitas]);
+
 
  useEffect(() => {
   const fetchFasilitas = async () => {
@@ -82,6 +106,18 @@ const scrollRight = () => {
       console.error("Gagal mencatat visitor:", err);
     });
   }, []);
+
+  // AUTO SLIDE SECTION 4 MOBILE
+useEffect(() => {
+  if (section4.length === 0) return;
+
+  const interval = setInterval(() => {
+    setCurrentIndex(prev => (prev + 1) % section4.length);
+  }, 3500); // 3.5 detik
+
+  return () => clearInterval(interval);
+}, [section4]);
+
 
 useEffect(() => {
   const fetchBerita = async () => {
@@ -276,8 +312,7 @@ useEffect(() => {
           </p>
         </div>
       </motion.section>
-
- {/* === SECTION 4 === */}
+{/* === SECTION 4 === */}
 <motion.section
   variants={fadeUp}
   initial="hidden"
@@ -289,67 +324,90 @@ useEffect(() => {
     KEUNGGULAN SDN 01 MANGUHARJO <br /> KOTA MADIUN
   </h1>
 
-  <div className="relative max-w-6xl mx-auto overflow-hidden">
+  {/* === MOBILE SLIDER === */}
+  <div className="block sm:hidden">
+    {section4.length > 0 && (
+      <div className="max-w-xs mx-auto">
+        <div className="bg-red-800 rounded-lg p-4 flex flex-col items-center">
+          <div className="bg-white rounded-lg shadow-md p-6 w-full flex flex-col items-center">
+            <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded mb-4 text-center">
+              {section4[currentIndex]?.judul}
+            </span>
 
-    {/* Tombol Panah Kiri */}
-    {section4.length > 3 && (
-      <button
-        onClick={scrollLeft}
-        className="absolute left-0 top-1/2 -translate-y-1/2 bg-red-700 text-white p-3 rounded-full shadow-lg hover:bg-red-800 z-10"
-      >
-        ❮
-      </button>
-    )}
+            <img
+              src={`${image_url}/${section4[currentIndex]?.Gambar}`}
+              alt={section4[currentIndex]?.judul}
+              className="w-32 h-32 mb-4 object-contain"
+            />
 
-    {/* WRAPPER SLIDE */}
-    <div className="w-full overflow-hidden">
-      <div
-        className="flex transition-transform duration-500"
-        style={{
-          transform: `translateX(-${currentIndex * 350}px)` // 350 = lebar card
-        }}
-      >
-        {section4.map((item, index) => (
-          <div
-            key={index}
-            className="bg-red-800 rounded-lg p-4 flex flex-col items-center min-w-[350px] max-w-[350px] mx-3"
-          >
-            <div className="bg-white rounded-lg shadow-md p-6 w-full h-full flex flex-col items-center">
-              <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded mb-4 text-center">
-                {item.judul}
-              </span>
-
-              <img
-                src={`${image_url}/${item.Gambar}`}
-                alt={item.judul}
-                className="w-32 h-32 mb-4 object-contain"
-              />
-
-              <p className="text-[#333] text-lg text-center mb-4 px-2">
-                {item.deskripsi}
-              </p>
-            </div>
+            <p className="text-[#333] text-lg text-center px-2">
+              {section4[currentIndex]?.deskripsi}
+            </p>
           </div>
-        ))}
+        </div>
+      </div>
+    )}
+  </div>
+
+ {/* === TABLET (iPad Mini) — 1 Baris, 3 Kolom === */}
+<div className="hidden sm:grid lg:hidden grid-cols-3 gap-6">
+  {section4.map((item, index) => (
+    <div
+      key={index}
+      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
+    >
+      {/* Gambar seperti fasilitas */}
+      <div className="relative w-full h-40 bg-gray-100">
+        <img
+          src={`${image_url}/${item.Gambar}`}
+          alt={item.judul}
+          className="object-contain w-full h-full p-4"
+        />
+      </div>
+
+      <div className="p-4 text-center">
+        <h3 className="text-base font-bold text-gray-900 mb-2">
+          {item.judul}
+        </h3>
+        <p className="text-gray-600 text-sm">
+          {item.deskripsi}
+        </p>
       </div>
     </div>
+  ))}
+</div>
 
-    {/* Tombol Panah Kanan */}
-    {section4.length > 3 && (
-      <button
-        onClick={scrollRight}
-        className="absolute right-0 top-1/2 -translate-y-1/2 bg-red-700 text-white p-3 rounded-full shadow-lg hover:bg-red-800 z-10"
-      >
-        ❯
-      </button>
-    )}
+  {/* === DESKTOP GRID === */}
+  <div className="hidden lg:grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
+    {section4.map((item, index) => (
+      <div key={index} className="bg-red-800 rounded-lg p-4 h-full flex">
+        <div className="bg-white rounded-lg shadow-md p-6 w-full flex flex-col justify-between items-center min-h-[360px]">
+          <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded mb-4 text-center">
+            {item.judul}
+          </span>
+
+          <img
+            src={`${image_url}/${item.Gambar}`}
+            alt={item.judul}
+            className="w-32 h-32 mb-4 object-contain"
+          />
+
+          <p className="text-[#333] text-lg text-center px-2">
+            {item.deskripsi}
+          </p>
+        </div>
+      </div>
+    ))}
   </div>
 </motion.section>
 
 
 
 
-     {/* === SECTION 5: FASILITAS SEKOLAH === */}
+
+
+
+   {/* === SECTION 5: FASILITAS SEKOLAH === */}
 <motion.section
   variants={fadeUp}
   initial="hidden"
@@ -367,33 +425,88 @@ useEffect(() => {
     ) : fasilitas.length === 0 ? (
       <p className="text-center text-gray-500">Belum ada data fasilitas.</p>
     ) : (
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-       {fasilitas.map((item) => (
-
-          <div
-            key={item.id}
-            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
-          >
+      <>
+        {/* === MOBILE SLIDER (1 PER 1) === */}
+        <div className="block sm:hidden">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="relative w-full h-56">
               <Image
-                src={`${image_url}/${item.Gambar}`}
-                alt={item.judul}
+                src={`${image_url}/${fasilitas[currentFasIndex].Gambar}`}
+                alt={fasilitas[currentFasIndex].judul}
                 fill
                 className="object-cover"
                 unoptimized
               />
             </div>
             <div className="p-5">
-              <h3 className="text-lg font-bold text-gray-900 line-clamp-2 mb-2">
-                {item.judul}
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                {fasilitas[currentFasIndex].judul}
               </h3>
-              <p className="text-gray-600 text-sm line-clamp-3">
-                {item.deskripsi}
+              <p className="text-gray-600 text-sm">
+                {fasilitas[currentFasIndex].deskripsi}
               </p>
             </div>
           </div>
-        ))}
+        </div>
+{/* === TABLET (iPad Mini) — 1 Baris, 2 Card Terbaru === */}
+<div className="hidden sm:block lg:hidden">
+  <div className="grid grid-cols-2 gap-6">
+    {fasilitas.slice(-2).map((item) => (
+      <div
+        key={item.id}
+        className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
+      >
+        <div className="relative w-full h-48">
+          <Image
+            src={`${image_url}/${item.Gambar}`}
+            alt={item.judul}
+            fill
+            className="object-cover"
+            unoptimized
+          />
+        </div>
+
+        <div className="p-4">
+          <h3 className="text-base font-bold text-gray-900 mb-2">
+            {item.judul}
+          </h3>
+          <p className="text-gray-600 text-sm">
+            {item.deskripsi}
+          </p>
+        </div>
       </div>
+    ))}
+  </div>
+</div>
+
+
+        {/* === DESKTOP GRID === */}
+       <div className="hidden lg:grid lg:grid-cols-3 gap-10">
+
+          {fasilitas.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
+            >
+              <div className="relative w-full h-56">
+                <Image
+                  src={`${image_url}/${item.Gambar}`}
+                  alt={item.judul}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+              <div className="p-5">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  {item.judul}
+                </h3>
+                <p className="text-gray-600 text-sm">{item.deskripsi}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
     )}
 
     <div className="text-center mt-12">
@@ -406,6 +519,7 @@ useEffect(() => {
     </div>
   </div>
 </motion.section>
+
 
 
       {/* === SECTION 6 === */}
@@ -439,79 +553,128 @@ useEffect(() => {
         </div>
       </motion.section>
 
-      {/* === SECTION 7 === */}
-      <motion.section
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        className="bg-gray-50 py-20"
-      >
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-            BERITA TERBARU SDN 01 MANGUHARJO
-          </h2>
+{/* === SECTION 7 === */}
+<motion.section
+  variants={fadeUp}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.3 }}
+  className="bg-gray-50 py-20"
+>
+  <div className="max-w-7xl mx-auto px-6">
+    <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+      BERITA TERBARU SDN 01 MANGUHARJO
+    </h2>
 
-          {loadingBerita ? (
-            <p className="text-center text-gray-500">Memuat berita...</p>
-          ) : berita.length === 0 ? (
-            <p className="text-center text-gray-500">
-              Belum ada berita yang tersedia.
-            </p>
-          ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              {berita.slice(0, 3).map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
-                >
-                  <div className="relative w-full h-56">
-                    <Image
-                      src={`${image_url}/${item.gambar}`}
-                      alt={item.judul}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-gray-900 line-clamp-2">
-                      {item.judul}
-                    </h3>
-                    <p className="text-gray-600 text-sm mt-2 line-clamp-3">
-                      {item.deskripsi}
-                    </p>
-                    <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
-                      <span>
-                        {new Date(item.created_at).toLocaleDateString("id-ID", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </span>
-                      <Link
-                        href="/client/berita"
-                        className="text-red-700 font-semibold hover:underline"
-                      >
-                        Baca Selengkapnya →
-                      </Link>
-                    </div>
-                  </div>
+    {loadingBerita ? (
+      <p className="text-center text-gray-500">Memuat berita...</p>
+    ) : berita.length === 0 ? (
+      <p className="text-center text-gray-500">Belum ada berita yang tersedia.</p>
+    ) : (
+      <>
+      {/* === MOBILE — 3 berita tampil menurun === */}
+<div className="block sm:hidden space-y-6">
+  {berita.slice(0, 3).map((item, index) => (
+    <div
+      key={index}
+      className="bg-white rounded-xl shadow-md overflow-hidden"
+    >
+      <div className="relative w-full h-56">
+        <Image
+          src={`${image_url}/${item.gambar}`}
+          alt={item.judul}
+          fill
+          className="object-cover"
+          unoptimized
+        />
+      </div>
+
+      <div className="p-5">
+        <h3 className="text-lg font-bold text-gray-900 line-clamp-2">
+          {item.judul}
+        </h3>
+
+        <p className="text-gray-600 text-sm mt-2 line-clamp-3">
+          {item.deskripsi}
+        </p>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+        {/* === iPad Mini — 2 berita terbaru === */}
+        <div className="hidden sm:block lg:hidden">
+          <div className="grid grid-cols-2 gap-6">
+            {berita.slice(0, 2).map((item) => (
+              <div
+                key={item.id}
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
+              >
+                <div className="relative w-full h-48">
+                  <Image
+                    src={`${image_url}/${item.gambar}`}
+                    alt={item.judul}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
                 </div>
-              ))}
-            </div>
-          )}
 
-          <div className="text-center mt-12">
-            <Link
-              href="/admin/CMS_berita/Berita"
-              className="inline-block bg-red-700 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-red-800 transition"
-            >
-              Lihat Semua Berita
-            </Link>
+                <div className="p-5">
+                  <h3 className="text-lg font-bold text-gray-900 line-clamp-2">
+                    {item.judul}
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-2 line-clamp-3">
+                    {item.deskripsi}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </motion.section>
+
+        {/* === DESKTOP — 3 kolom === */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-10">
+          {berita.slice(0, 3).map((item) => (
+            <div
+              key={item.id}
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
+            >
+              <div className="relative w-full h-56">
+                <Image
+                  src={`${image_url}/${item.gambar}`}
+                  alt={item.judul}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+              <div className="p-5">
+                <h3 className="text-lg font-bold text-gray-900 line-clamp-2">
+                  {item.judul}
+                </h3>
+                <p className="text-gray-600 text-sm mt-2 line-clamp-3">
+                  {item.deskripsi}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </>
+    )}
+
+    <div className="text-center mt-12">
+      <Link
+        href="/admin/CMS_berita/Berita"
+        className="inline-block bg-red-700 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-red-800 transition"
+      >
+        Lihat Semua Berita
+      </Link>
+    </div>
+  </div>
+</motion.section>
+
 
       <Footer />
     </>

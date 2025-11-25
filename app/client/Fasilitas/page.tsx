@@ -13,12 +13,26 @@ interface FasilitasItem {
   Gambar: string;
 }
 
+// Skeleton Component
+function SkeletonCard() {
+  return (
+    <div className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
+      <div className="w-full h-48 bg-gray-300"></div>
+
+      <div className="p-4 space-y-3">
+        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+        <div className="h-3 bg-gray-300 rounded w-full"></div>
+        <div className="h-3 bg-gray-300 rounded w-5/6"></div>
+      </div>
+    </div>
+  );
+}
+
 export default function Fasilitas() {
   const [fasilitas, setFasilitas] = useState<FasilitasItem[]>([]);
   const [loading, setLoading] = useState(true);
   const toast = useRef<Toast>(null);
 
-  // 🔹 Ambil data dari API GETFASILITAS
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -37,52 +51,75 @@ export default function Fasilitas() {
     }
   };
 
-  // Jalankan fetchData saat komponen dimuat
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
-    <main className="pt-16">
+    <main className="pt-1">
       <Toast ref={toast} />
 
-      {/* Section Judul */}
+      {/* Header */}
       <section className="relative bg-red-800 bg-center h-64 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-            FASILITAS SDN 01 MANGUHARJO KOTA MADIUN
-          </h1>
-        </div>
+        <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg text-center">
+          FASILITAS SDN 01 MANGUHARJO KOTA MADIUN
+        </h1>
       </section>
 
-      {/* Section Fasilitas */}
+      {/* Content */}
       <section className="container mx-auto px-4 py-12">
+        {/* === SKELETON LOADING === */}
         {loading ? (
-          <p className="text-center text-gray-500">Memuat data fasilitas...</p>
+          <div
+            className="
+              grid 
+              grid-cols-1
+              sm:grid-cols-2
+              lg:grid-cols-3
+              gap-8
+            "
+          >
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
         ) : fasilitas.length === 0 ? (
           <p className="text-center text-gray-500">Belum ada data fasilitas.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div
+            className="
+              grid 
+              grid-cols-1        /* Mobile */
+              sm:grid-cols-2     /* iPad Mini */
+              lg:grid-cols-3     /* Laptop */
+              gap-8
+            "
+          >
             {fasilitas.map((item) => (
               <div
                 key={item.id}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition"
               >
-                {item.Gambar && (
-                  <Image
-                    src={`${image_url}/${item.Gambar}`}
-                    alt={item.judul}
-                    width={400}
-                    height={400}
-                    className="max-w-full max-h-48 object-contain"
-                    unoptimized // ⬅️ penting kalau localhost tanpa domain https
-                  />
-                )}
+                {/* Gambar */}
+                <div className="w-full h-48 flex items-center justify-center bg-gray-50">
+                  {item.Gambar && (
+                    <Image
+                      src={`${image_url}/${item.Gambar}`}
+                      alt={item.judul}
+                      width={400}
+                      height={400}
+                      className="object-contain h-full p-2"
+                      unoptimized
+                    />
+                  )}
+                </div>
+
+                {/* Isi card */}
                 <div className="p-4">
-                  <h3 className="text-xl font-semibold text-red-800 mb-2">
+                  <h3 className="text-xl font-semibold text-red-800 mb-2 text-center">
                     {item.judul}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm leading-relaxed text-center">
                     {item.deskripsi}
                   </p>
                 </div>
