@@ -6,6 +6,8 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import { apiEndpoints, image_url } from "@/app/api/api";
 import { motion } from "framer-motion"; // 🪄 Tambahan animasi scroll
+import { useRef } from "react";
+
 
 export default function LandingPage() {
   const [section1, setSection1] = useState<any>(null);
@@ -17,6 +19,34 @@ export default function LandingPage() {
   const [loadingBerita, setLoadingBerita] = useState(true);
   const [fasilitas, setFasilitas] = useState<FasilitasItem[]>([]);
   const [loadingFasilitas, setLoadingFasilitas] = useState<boolean>(true);
+  // === LOGIC CAROUSEL SECTION 4 ===
+const [currentIndex, setCurrentIndex] = useState(0);
+const scrollRef = useRef<HTMLDivElement | null>(null);
+
+const cardWidth = 350; // ukuran card (330px + gap)
+
+const scrollLeft = () => {
+  if (currentIndex > 0) {
+    const newIndex = currentIndex - 1;
+    setCurrentIndex(newIndex);
+    scrollRef.current?.scrollTo({
+      left: newIndex * cardWidth,
+      behavior: "smooth",
+    });
+  }
+};
+
+const scrollRight = () => {
+  if (currentIndex < section4.length - 1) {
+    const newIndex = currentIndex + 1;
+    setCurrentIndex(newIndex);
+    scrollRef.current?.scrollTo({
+      left: newIndex * cardWidth,
+      behavior: "smooth",
+    });
+  }
+};
+
 
   interface FasilitasItem {
     id: number;
@@ -53,42 +83,59 @@ export default function LandingPage() {
     });
   }, []);
 
-  useEffect(() => {
-    const fetchBerita = async () => {
-      try {
-        const res = await axios.get(apiEndpoints.GETBERITA);
-        setBerita(res.data.data || res.data);
-      } catch (error) {
-        console.error("Gagal memuat berita:", error);
-      } finally {
-        setLoadingBerita(false);
-      }
-    };
-    fetchBerita();
-  }, []);
+useEffect(() => {
+  const fetchBerita = async () => {
+    try {
+      const res = await axios.get(apiEndpoints.GETBERITA);
+      const data = res.data.data || res.data;
 
-  useEffect(() => {
-    const fetchLanding = async () => {
-      try {
-        const res = await axios.get(apiEndpoints.GETLANDING);
+      // 🔥 Urutkan berdasarkan id terbaru
+      const beritaTerbaru = [...data].sort(
+        (a: { id: number }, b: { id: number }) => b.id - a.id
+      );
 
-        const sec1 = res.data.filter((item: any) => item.section === "1");
-        const sec2 = res.data.filter((item: any) => item.section === "2");
-        const sec3 = res.data.filter((item: any) => item.section === "3");
-        const sec4 = res.data.filter((item: any) => item.section === "4");
+      setBerita(beritaTerbaru);
+    } catch (error) {
+      console.error("Gagal memuat berita:", error);
+    } finally {
+      setLoadingBerita(false);
+    }
+  };
 
-        setSection1(sec1[0]);
-        setSection2(sec2[0]);
-        setSection3(sec3[0]);
-        setSection4(sec4);
-      } catch (error) {
-        console.error("Gagal memuat data landing:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLanding();
-  }, []);
+  fetchBerita();
+}, []);
+
+
+ useEffect(() => {
+  const fetchLanding = async () => {
+    try {
+      const res = await axios.get(apiEndpoints.GETLANDING);
+
+      const sortDesc = (arr: any[]) => {
+        return [...arr].sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      };
+
+      const sec1 = sortDesc(res.data.filter((item: any) => item.section === "1"));
+      const sec2 = sortDesc(res.data.filter((item: any) => item.section === "2"));
+      const sec3 = sortDesc(res.data.filter((item: any) => item.section === "3"));
+      const sec4 = res.data.filter((item: any) => item.section === "4"); // section 4 tetap semua
+
+      setSection1(sec1[0]); // 🔥 ini sudah data terbaru
+      setSection2(sec2[0]); // 🔥 terbaru
+      setSection3(sec3[0]); // 🔥 terbaru
+      setSection4(sec4);
+    } catch (error) {
+      console.error("Gagal memuat data landing:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchLanding();
+}, []);
+
 
   if (loading) {
     return (
@@ -230,46 +277,77 @@ export default function LandingPage() {
         </div>
       </motion.section>
 
-      {/* === SECTION 4 === */}
-      <motion.section
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        className="bg-white py-16"
+ {/* === SECTION 4 === */}
+<motion.section
+  variants={fadeUp}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.3 }}
+  className="bg-white py-16"
+>
+  <h1 className="text-3xl font-bold mb-8 text-center text-black">
+    KEUNGGULAN SDN 01 MANGUHARJO <br /> KOTA MADIUN
+  </h1>
+
+  <div className="relative max-w-6xl mx-auto overflow-hidden">
+
+    {/* Tombol Panah Kiri */}
+    {section4.length > 3 && (
+      <button
+        onClick={scrollLeft}
+        className="absolute left-0 top-1/2 -translate-y-1/2 bg-red-700 text-white p-3 rounded-full shadow-lg hover:bg-red-800 z-10"
       >
-        <h1 className="text-3xl font-bold mb-8 text-center text-black">
-          KEUNGGULAN SDN 01 MANGUHARJO <br /> KOTA MADIUN
-        </h1>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {section4.length > 0 ? (
-            section4.map((item, index) => (
-              <div
-                key={index}
-                className="bg-red-800 rounded-lg p-4 flex flex-col items-center"
-              >
-                <div className="bg-white rounded-lg shadow-md p-6 w-full h-full flex flex-col items-center">
-                  <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded mb-4 text-center">
-                    {item.judul || "Judul Keunggulan"}
-                  </span>
-                  <img
-                    src={`${image_url}/${item.Gambar}`}
-                    alt={item.judul || "Gambar Keunggulan"}
-                    className="w-32 h-32 mb-4 object-contain"
-                  />
-                  <p className="text-[#333] text-lg text-center mb-4 px-2">
-                    {item.deskripsi || "Deskripsi belum tersedia."}
-                  </p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center col-span-3 text-gray-600">
-              Belum ada data keunggulan.
-            </p>
-          )}
-        </div>
-      </motion.section>
+        ❮
+      </button>
+    )}
+
+    {/* WRAPPER SLIDE */}
+    <div className="w-full overflow-hidden">
+      <div
+        className="flex transition-transform duration-500"
+        style={{
+          transform: `translateX(-${currentIndex * 350}px)` // 350 = lebar card
+        }}
+      >
+        {section4.map((item, index) => (
+          <div
+            key={index}
+            className="bg-red-800 rounded-lg p-4 flex flex-col items-center min-w-[350px] max-w-[350px] mx-3"
+          >
+            <div className="bg-white rounded-lg shadow-md p-6 w-full h-full flex flex-col items-center">
+              <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded mb-4 text-center">
+                {item.judul}
+              </span>
+
+              <img
+                src={`${image_url}/${item.Gambar}`}
+                alt={item.judul}
+                className="w-32 h-32 mb-4 object-contain"
+              />
+
+              <p className="text-[#333] text-lg text-center mb-4 px-2">
+                {item.deskripsi}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Tombol Panah Kanan */}
+    {section4.length > 3 && (
+      <button
+        onClick={scrollRight}
+        className="absolute right-0 top-1/2 -translate-y-1/2 bg-red-700 text-white p-3 rounded-full shadow-lg hover:bg-red-800 z-10"
+      >
+        ❯
+      </button>
+    )}
+  </div>
+</motion.section>
+
+
+
 
      {/* === SECTION 5: FASILITAS SEKOLAH === */}
 <motion.section

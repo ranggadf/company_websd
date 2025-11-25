@@ -19,19 +19,29 @@ export default function BeritaPage() {
   const [berita, setBerita] = useState<BeritaItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchBerita = async () => {
-      try {
-        const res = await axios.get(apiEndpoints.GETBERITA);
-        setBerita(res.data.data || res.data);
-      } catch (error) {
-        console.error("Gagal memuat data berita:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBerita();
-  }, []);
+ useEffect(() => {
+  const fetchBerita = async () => {
+    try {
+      const res = await axios.get(apiEndpoints.GETBERITA);
+
+      const data = res.data.data || res.data;
+
+      // 🔥 Urutkan berdasarkan ID terbesar (paling baru)
+      const beritaTerbaru = data
+        .sort((a: BeritaItem, b: BeritaItem) => b.id - a.id)
+        .slice(0, 2); // 🔥 Ambil hanya 2 data terbaru
+
+      setBerita(beritaTerbaru);
+    } catch (error) {
+      console.error("Gagal memuat data berita:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchBerita();
+}, []);
+
 
   return (
     <div className="min-h-screen flex flex-col">
