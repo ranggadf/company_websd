@@ -47,7 +47,7 @@ export default function NavigationBar() {
               onMouseLeave={handleMouseLeave}
             >
               <button className="text-[16px] font-semibold flex items-center gap-1 hover:text-red-600 transition">
-                Profile <ChevronDown size={16} />
+                Profil <ChevronDown size={16} />
               </button>
 
               <div

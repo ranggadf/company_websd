@@ -1,17 +1,18 @@
 import {
-  Facebook,
   Instagram,
-  Twitter,
   Mail,
   MapPin,
   Phone,
+  Youtube,
+  Music2, // sebagai pengganti TikTok
 } from "lucide-react";
 import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="bg-red-800  py-10 text-white">
+    <footer className="bg-red-800 py-10 text-white">
       <div className="container mx-auto px-6">
+
         {/* Grid Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
           {/* Logo + Tagline */}
@@ -54,11 +55,11 @@ export default function Footer() {
             </h4>
             <div className="flex items-center gap-3 text-sm mb-3 opacity-90 hover:opacity-100 transition-all">
               <Phone className="w-5 h-5" />
-              <span>0811-0516-19</span>
+              <span>[0351] 467898</span>
             </div>
             <div className="flex items-center gap-3 text-sm opacity-90 hover:opacity-100 transition-all">
               <Mail className="w-5 h-5" />
-              <span>sdn-1manguharjo@gmail.com</span>
+              <span>sdnmanguharjo@gmail.com</span>
             </div>
           </div>
         </div>
@@ -75,9 +76,9 @@ export default function Footer() {
           {/* Sosial Media */}
           <div className="flex gap-5">
             {[
-              { icon: Facebook, href: "#" },
-              { icon: Twitter, href: "#" },
-              { icon: Instagram, href: "#" },
+              { icon: Youtube, href: "https://youtube.com/@sdn01manguharjomadiun13?si=l6R9t6KlgBXMPELM" },  
+              { icon: Music2, href: "https://www.tiktok.com/@sdnmanguharjoesma?is_from_webapp=1&sender_device=pc" },   // TikTok → Music2 (tanpa error)
+              { icon: Instagram, href: "https://www.instagram.com/sdnmanguharjo/?utm_source=ig_web_button_share_sheet" },
             ].map((social, index) => (
               <a
                 key={index}
@@ -91,6 +92,7 @@ export default function Footer() {
             ))}
           </div>
         </div>
+
       </div>
     </footer>
   );

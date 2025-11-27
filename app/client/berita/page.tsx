@@ -19,29 +19,26 @@ export default function BeritaPage() {
   const [berita, setBerita] = useState<BeritaItem[]>([]);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
-  const fetchBerita = async () => {
-    try {
-      const res = await axios.get(apiEndpoints.GETBERITA);
+  useEffect(() => {
+    const fetchBerita = async () => {
+      try {
+        const res = await axios.get(apiEndpoints.GETBERITA);
+        const data = res.data.data || res.data;
 
-      const data = res.data.data || res.data;
+        const beritaTerbaru = data
+          .sort((a: BeritaItem, b: BeritaItem) => b.id - a.id)
+          .slice(0, 2);
 
-      // 🔥 Urutkan berdasarkan ID terbesar (paling baru)
-      const beritaTerbaru = data
-        .sort((a: BeritaItem, b: BeritaItem) => b.id - a.id)
-        .slice(0, 2); // 🔥 Ambil hanya 2 data terbaru
+        setBerita(beritaTerbaru);
+      } catch (error) {
+        console.error("Gagal memuat data berita:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      setBerita(beritaTerbaru);
-    } catch (error) {
-      console.error("Gagal memuat data berita:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchBerita();
-}, []);
-
+    fetchBerita();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -66,8 +63,25 @@ export default function BeritaPage() {
               Latest Posts
             </h2>
 
+            {/* ========== SKELETON BERITA UTAMA ========== */}
             {loading ? (
-              <p className="text-center text-gray-500">Memuat berita...</p>
+              <div className="flex flex-col gap-14">
+                {[1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col border-b border-gray-200 pb-10 animate-pulse"
+                  >
+                    <div className="w-full h-[300px] md:h-[400px] bg-gray-300 rounded-lg"></div>
+
+                    <div className="mt-4 space-y-3">
+                      <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                      <div className="h-4 bg-gray-300 rounded w-full"></div>
+                      <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : berita.length === 0 ? (
               <p className="text-center text-gray-500">
                 Belum ada berita yang tersedia.
@@ -103,19 +117,25 @@ export default function BeritaPage() {
                       <div className="flex justify-between flex-wrap mt-3 text-sm text-gray-600">
                         <span>
                           Posted on{" "}
-                          {new Date(item.created_at).toLocaleDateString("id-ID", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          })}
+                          {new Date(item.created_at).toLocaleDateString(
+                            "id-ID",
+                            {
+                              day: "2-digit",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )}
                         </span>
                         <span className="text-gray-500">
                           Updated:{" "}
-                          {new Date(item.updated_at).toLocaleDateString("id-ID", {
-                            day: "2-digit",
-                            month: "long",
-                            year: "numeric",
-                          })}
+                          {new Date(item.updated_at).toLocaleDateString(
+                            "id-ID",
+                            {
+                              day: "2-digit",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )}
                         </span>
                       </div>
                     </div>
@@ -127,49 +147,62 @@ export default function BeritaPage() {
 
           {/* === Kolom Kanan: Sidebar === */}
           <aside className="space-y-8">
-            {/* Deskripsi Sidebar */}
             <div className="bg-red-50 border-l-4 border-red-600 p-5 rounded-md">
               <h3 className="text-lg font-bold text-red-700 mb-2">
                 Jangan Ketinggalan!
               </h3>
               <p className="text-gray-700 text-sm leading-relaxed">
                 Dapatkan informasi terkini seputar kegiatan, prestasi, dan
-                pengumuman penting dari SDN 01 Manguharjo. Selalu update agar
-                tidak ketinggalan berita terbaru!
+                pengumuman penting dari SDN 01 Manguharjo.
               </p>
             </div>
 
-           
+            {/* ======== Recent Posts ======== */}
+            <div>
+              <h3 className="text-red-800 font-bold text-lg mb-4">
+                Recent Posts
+              </h3>
 
-            {/* Recent Posts */}
-            {/* Recent Posts */}
-<div>
-  <h3 className="text-red-800 font-bold text-lg mb-4">
-    Recent Posts
-  </h3>
-  <div className="space-y-3">
-    {berita.slice(0, 3).map((item) => (
-      <div
-        key={item.id}
-        className="flex items-center gap-3 bg-red-50 rounded-md p-2 cursor-default"
-      >
-        <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
-          <Image
-            src={`${image_url}/${item.gambar}`}
-            alt={item.judul}
-            fill
-            className="object-cover"
-            unoptimized
-          />
-        </div>
-        <p className="text-sm font-medium text-gray-800 leading-snug">
-          {item.judul}
-        </p>
-      </div>
-    ))}
-  </div>
-</div>
-
+              {loading ? (
+                // ==== SKELETON RECENT POSTS ====
+                <div className="space-y-3 animate-pulse">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-3 bg-red-50 rounded-md p-2"
+                    >
+                      <div className="w-16 h-16 bg-gray-300 rounded"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {berita.slice(0, 3).map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 bg-red-50 rounded-md p-2 cursor-default"
+                    >
+                      <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
+                        <Image
+                          src={`${image_url}/${item.gambar}`}
+                          alt={item.judul}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                      <p className="text-sm font-medium text-gray-800 leading-snug">
+                        {item.judul}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </aside>
         </div>
       </section>
