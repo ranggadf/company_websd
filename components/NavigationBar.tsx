@@ -66,7 +66,10 @@ export default function NavigationBar() {
                     <Link href="/Fasilitas" className="hover:text-red-600">
                       Fasilitas
                     </Link>
-                    <Link href="/visimisi" className="hover:text-red-600">
+                    <Link
+                      href="/client/visimisi"
+                      className="hover:text-red-600"
+                    >
                       Visi & Misi
                     </Link>
                     <Link href="/guru" className="hover:text-red-600">
