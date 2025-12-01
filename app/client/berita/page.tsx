@@ -60,7 +60,7 @@ export default function BeritaPage() {
           {/* === Kolom Kiri: Daftar Berita === */}
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold uppercase mb-10 text-gray-800">
-              Latest Posts
+              Postingan terbaru
             </h2>
 
             {/* ========== SKELETON BERITA UTAMA ========== */}
@@ -160,7 +160,7 @@ export default function BeritaPage() {
             {/* ======== Recent Posts ======== */}
             <div>
               <h3 className="text-red-800 font-bold text-lg mb-4">
-                Recent Posts
+                Postingan terbaru
               </h3>
 
               {loading ? (
