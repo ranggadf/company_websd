@@ -66,7 +66,7 @@ export default function NavigationBar() {
                     <Link href="/Fasilitas" className="hover:text-red-600">
                       Fasilitas
                     </Link>
-                    <Link href="/visi-misi" className="hover:text-red-600">
+                    <Link href="/visimisi" className="hover:text-red-600">
                       Visi & Misi
                     </Link>
                     <Link href="/guru" className="hover:text-red-600">
@@ -91,7 +91,7 @@ export default function NavigationBar() {
               Ekstrakurikuler
             </Link>
             <Link
-              href="/hubungi-kami"
+              href="/client/hubungi"
               className="text-[16px] font-semibold hover:text-red-600"
             >
               Hubungi Kami

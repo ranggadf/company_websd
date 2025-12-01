@@ -1,9 +1,11 @@
 "use client";
 
-import Footer from "@/components/Footer";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
+import Footer from "@/components/Footer"; // Asumsi path komponen footer
 
-// --- Ikon SVG ---
+// --- Definisi Ikon SVG (Tidak ada perubahan) ---
 const PhoneIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +22,6 @@ const PhoneIcon = () => (
     />
   </svg>
 );
-
 const MailIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +38,6 @@ const MailIcon = () => (
     />
   </svg>
 );
-
 const LocationIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,6 @@ const LocationIcon = () => (
     />
   </svg>
 );
-
 const InstagramIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +73,6 @@ const InstagramIcon = () => (
     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
   </svg>
 );
-
 const YoutubeIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -88,42 +86,77 @@ const YoutubeIcon = () => (
     <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
   </svg>
 );
-
 const TiktokIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-7 w-7"
-    fill="none"
     viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
+    fill="currentColor"
+    stroke="none"
   >
-    <path d="M16.5 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0zM7 16.5v-6h2v6a2.5 2.5 0 0 0 5 0v-6a7.5 7.5 0 1 1-7-7.4" />
+    <path d="M21 7.9c-1.15-.36-2.5-1.55-3.66-2.61C15.8 4.1 13.5 3 12 3v18c3.2-1.7 5.75-5.3 6-9h-4.5V8.5c0-.6-.35-1.2-1-1.2-.65 0-1.1.6-1.1 1.2V11H9.8c-.5 0-.9.4-.9.9v1.2c0 .5.4.9.9.9h.8V19c0 1.1.9 2 2 2s2-.9 2-2v-4.5c2.7-.3 5.4-2.8 5.4-6.4 0-.1-.1-.2-.2-.2z" />
   </svg>
 );
 
-// --- Halaman Hubungi Kami ---
-export default function HubungiKamiPage() {
-  const [hubungi, setHubungi] = useState<any>(null);
+// --- Tipe Data Kontak ---
+interface KontakData {
+  judul: string;
+  no_telp: string;
+  email: string;
+  alamat: string;
+  instagram: string;
+  youtube: string;
+  tiktok: string;
+}
 
-const fetchData = async () => {
-  try {
-    const res = await axios.get(apiEndpoints.GETHubungiKami);
-
-    if (Array.isArray(res.data) && res.data.length > 0) {
-      setHubungi(res.data[0]); // ambil objek pertama
-    } else {
-      console.error("Data hubungi kosong:", res.data);
-    }
-
-  } catch (error) {
-    console.error("Error fetching hubungi kami:", error);
-  }
+// --- KONFIGURASI API ---
+const API_CONFIG = {
+  api_url: `http://127.0.0.1:8000/api`,
+  GETHubungiKami: `http://127.0.0.1:8000/api/gethubungikami`,
 };
 
-useEffect(() => {
-  fetchData();
-}, []);
+const API_ENDPOINT = API_CONFIG.GETHubungiKami;
+
+// Data Fallback (URL lengkap, tidak ada perubahan)
+const DEFAULT_FALLBACK_DATA: KontakData = {
+  judul: "Informasi Kontak Sekolah",
+  no_telp: "+62 818-0411-6347",
+  email: "sdnmanguharjo@gmail.com",
+  alamat:
+    "Jl. Hayam Wuruk No.06, Manguharjo, Kec. Manguharjo, Kota Madiun, Jawa Timur 63127",
+  instagram: "https://www.instagram.com/sdnmanguharjo/",
+  youtube: "https://youtube.com/@sdn01manguharjomadiun13",
+  tiktok: "https://www.tiktok.com/@sdnmanguharjoesma",
+};
+
+// --- HAPUS: Konstanta FALLBACK_SOCIAL_MEDIA_URL yang menyeragamkan URL
+// const FALLBACK_SOCIAL_MEDIA_URL = DEFAULT_FALLBACK_DATA.instagram;
+
+const HubungiKamiPage = () => {
+  const [hubungi, setHubungi] = useState<KontakData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(API_ENDPOINT);
+
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        setHubungi(response.data[0] as KontakData);
+      } else {
+        console.warn("API returned empty data. Using fallback.");
+        setHubungi(DEFAULT_FALLBACK_DATA);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setHubungi(DEFAULT_FALLBACK_DATA);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -135,63 +168,40 @@ useEffect(() => {
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
   };
 
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    hubungi?.alamat || "SDN Manguharjo Madiun"
+  )}`;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-xl">
+        Memuat data kontak...
+      </div>
+    );
+  }
+
   return (
-<<<<<<< HEAD
-    <div className="bg-gradient-to-br from-rose-50 via-stone-50 to-pink-100 min-h-screen w-full flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 font-sans">
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-        className="text-center mb-12"
-      >
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
-          Hubungi Kami
-        </h1>
-        <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-          Silakan hubungi kami jika ada pertanyaan atau informasi yang
-          dibutuhkan. Kami siap membantu Anda.
-        </p>
-      </motion.div>
-
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl w-full"
-      >
-        {/* Kolom Informasi Kontak */}
-=======
     <div className="flex flex-col min-h-screen bg-white font-sans">
-      <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 md:p-10">
->>>>>>> ecbc9378b28e185828a4471b9d6be3928c0db03f
+      <main className="flex-grow flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 bg-gradient-to-br from-red-50 to-pink-50">
         <motion.div
-          variants={itemVariants}
-          className="bg-white/60 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="text-center mb-12"
         >
-<<<<<<< HEAD
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-            Informasi Kontak
-          </h2>
-
-          <div className="space-y-6">
-            <div className="flex items-start space-x-4">
-              <div className="bg-green-100 text-green-600 rounded-full p-3">
-                <PhoneIcon />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg text-gray-700">
-                  Whatsapp
-                </h3>
-                <p className="text-gray-600">+62 818-0411-6347</p>
-=======
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-red-800 tracking-tight">
             Hubungi Kami
           </h1>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Silakan hubungi kami jika ada pertanyaan atau informasi yang diperlukan.
+            Silakan hubungi kami jika ada pertanyaan atau informasi yang
+            dibutuhkan.
           </p>
         </motion.div>
 
@@ -199,200 +209,139 @@ useEffect(() => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 max-w-6xl w-full"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 max-w-6xl w-full"
         >
-          {/* Informasi Kontak */}
+          {/* Kolom Informasi Kontak Utama */}
           <motion.div
             variants={itemVariants}
-            whileHover={{ scale: 1.03, y: -5 }}
-            className="bg-red-800 text-white backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
+            whileHover={{ scale: 1.03 }}
+            className="bg-red-800 text-white shadow-xl rounded-2xl p-8 border border-red-900/50 transition-transform duration-300"
           >
             <h2 className="text-3xl font-bold mb-8 text-center">
-              {hubungi?.judul || "Memuat..."}
+              {hubungi?.judul || "Informasi Kontak"}
             </h2>
-
             <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <div className="bg-white/20 text-white rounded-full p-3">
-                  <PhoneIcon />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Whatsapp</h3>
-                  <p>{hubungi?.no_telp || "-"}</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-white/20 text-white rounded-full p-3">
-                  <MailIcon />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Email</h3>
-                  <p>{hubungi?.email || "-"}</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-white/20 text-white rounded-full p-3">
-                  <LocationIcon />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Alamat</h3>
-                  <p>{hubungi?.alamat || "-"}</p>
-                </div>
->>>>>>> ecbc9378b28e185828a4471b9d6be3928c0db03f
-              </div>
+              <ContactItem
+                icon={PhoneIcon}
+                title="Whatsapp"
+                value={hubungi?.no_telp || "-"}
+              />
+              <ContactItem
+                icon={MailIcon}
+                title="Email"
+                value={hubungi?.email || "-"}
+              />
+              <ContactItem
+                icon={LocationIcon}
+                title="Alamat"
+                value={hubungi?.alamat || "-"}
+              />
             </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="bg-blue-100 text-blue-600 rounded-full p-3">
-                <MailIcon />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg text-gray-700">Email</h3>
-                <p className="text-gray-600">sdnmanguharjo@gmail.com</p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-4">
-              <div className="bg-red-100 text-red-600 rounded-full p-3">
-                <LocationIcon />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg text-gray-700">Alamat</h3>
-                <p className="text-gray-600">
-                  Jl. Hayam Wuruk No.06, Manguharjo, Kec. Manguharjo, Kota
-                  Madiun, Jawa Timur 63127
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <motion.a
-            href="https://www.google.com/maps/search/?api=1&query=Jl.+Hayam+Wuruk+No.06,+Manguharjo,+Kota+Madiun"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="mt-10 block w-full bg-red-500 text-white text-center font-bold py-3 px-6 rounded-lg shadow-md hover:bg-red-600 transition-colors duration-300"
-          >
-            Buka di Maps
-          </motion.a>
-        </motion.div>
-
-        {/* Kolom Sosial Media */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white/60 backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
-        >
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-            Follow Sosial Media Kami
-          </h2>
-
-          <div className="space-y-4">
             <motion.a
-<<<<<<< HEAD
-              href="https://www.instagram.com/sdnmanguharjo/"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, x: 5 }}
-              className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-=======
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                hubungi?.alamat || ""
-              )}`}
+              href={mapUrl}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.05 }}
-              className="mt-10 block w-full bg-white text-red-800 text-center font-bold py-3 px-6 rounded-lg shadow-md hover:bg-gray-100 transition-colors duration-300"
->>>>>>> ecbc9378b28e185828a4471b9d6be3928c0db03f
+              whileTap={{ scale: 0.98 }}
+              className="mt-10 block w-full bg-white text-red-800 text-center font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-100 transition-colors duration-300 uppercase tracking-wider"
             >
-              <InstagramIcon />
-              <span className="ml-4 font-semibold text-lg text-gray-700">
-                Instagram
-              </span>
+              Buka di Maps 🗺️
             </motion.a>
-<<<<<<< HEAD
-            <motion.a
-              href="https://youtube.com/@sdn01manguharjomadiun13?si=g1KEwXYXd53_5BVs"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, x: 5 }}
-              className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-            >
-              <YoutubeIcon />
-              <span className="ml-4 font-semibold text-lg text-gray-700">
-                YouTube
-              </span>
-            </motion.a>
-            <motion.a
-              href="https://www.tiktok.com/@sdnmanguharjoesma?_s=from_webapp=1&sender_device=pc"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, x: 5 }}
-              className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-            >
-              <TiktokIcon />
-              <span className="ml-4 font-semibold text-lg text-gray-700">
-                TikTok
-              </span>
-            </motion.a>
-          </div>
-        </motion.div>
-      </motion.div>
-=======
           </motion.div>
 
-          {/* Sosial Media */}
+          {/* Kolom Sosial Media */}
           <motion.div
             variants={itemVariants}
-            whileHover={{ scale: 1.03, y: -5 }}
-            className="bg-red-800 text-white backdrop-blur-lg shadow-xl rounded-2xl p-8 border border-gray-200/50"
+            whileHover={{ scale: 1.03 }}
+            className="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 transition-transform duration-300"
           >
-            <h2 className="text-3xl font-bold mb-8 text-center">Follow Sosial Media Kami</h2>
-
-            <div className="space-y-4">
-              <motion.a
-                href="https://www.instagram.com/sdnmanguharjo/"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, x: 5 }}
-                className="flex items-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-200"
-              >
-                <InstagramIcon />
-                <span className="ml-4 font-semibold text-lg">Instagram</span>
-              </motion.a>
-
-              <motion.a
-                href="https://youtube.com/@sdn01manguharjomadiun13"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, x: 5 }}
-                className="flex items-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-200"
-              >
-                <YoutubeIcon />
-                <span className="ml-4 font-semibold text-lg">YouTube</span>
-              </motion.a>
-
-              <motion.a
-                href="https://www.tiktok.com/@sdnmanguharjoesma"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, x: 5 }}
-                className="flex items-center p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors duration-200"
-              >
-                <TiktokIcon />
-                <span className="ml-4 font-semibold text-lg">TikTok</span>
-              </motion.a>
+            <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+              Follow Sosial Media Kami
+            </h2>
+            <div className="space-y-6">
+              {/* PERBAIKAN: Menggunakan FALLBACK URL YANG SESUAI dengan platformnya */}
+              <SocialMediaLink
+                Icon={InstagramIcon}
+                name="Instagram"
+                href={hubungi?.instagram}
+                color="text-pink-600"
+                fallbackUrl={DEFAULT_FALLBACK_DATA.instagram} // Menggunakan Instagram fallback
+              />
+              <SocialMediaLink
+                Icon={YoutubeIcon}
+                name="YouTube"
+                href={hubungi?.youtube}
+                color="text-red-600"
+                fallbackUrl={DEFAULT_FALLBACK_DATA.youtube} // Menggunakan YouTube fallback
+              />
+              <SocialMediaLink
+                Icon={TiktokIcon}
+                name="TikTok"
+                href={hubungi?.tiktok}
+                color="text-gray-800"
+                fallbackUrl={DEFAULT_FALLBACK_DATA.tiktok} // Menggunakan TikTok fallback
+              />
             </div>
           </motion.div>
         </motion.div>
       </main>
 
-      <div className="-mx-4 sm:-mx-6 md:-mx-10">
+      <div className="mt-8">
         <Footer />
       </div>
->>>>>>> ecbc9378b28e185828a4471b9d6be3928c0db03f
     </div>
   );
-}
+};
+
+export default HubungiKamiPage;
+
+// Komponen Pembantu (ContactItem tidak ada perubahan)
+const ContactItem = ({
+  icon: Icon,
+  title,
+  value,
+}: {
+  icon: React.FC;
+  title: string;
+  value: string;
+}) => (
+  <div className="flex items-start space-x-4">
+    <div className="bg-white/20 text-white rounded-full p-3 flex-shrink-0">
+      <Icon />
+    </div>
+    <div>
+      <h3 className="font-semibold text-lg">{title}</h3>
+      <p className="break-words">{value}</p>
+    </div>
+  </div>
+);
+
+// Komponen Pembantu SocialMediaLink
+const SocialMediaLink = ({
+  Icon,
+  name,
+  href,
+  color,
+  fallbackUrl,
+}: {
+  Icon: React.FC;
+  name: string;
+  href: string | undefined;
+  color: string;
+  fallbackUrl: string; // Tipe string wajib
+}) => (
+  <motion.a
+    // LOGIKA PERBAIKAN: Menggunakan URL yang tersedia dari API, jika kosong, pakai URL fallback yang spesifik (Instagram, YouTube, atau TikTok)
+    href={href || fallbackUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    whileHover={{ scale: 1.05, x: 5 }}
+    whileTap={{ scale: 0.98 }}
+    className={`flex items-center p-4 bg-gray-50 rounded-xl shadow-sm hover:bg-gray-100 transition-all duration-200`}
+  >
+    <div className={color}>
+      <Icon />
+    </div>
+    <span className="ml-4 font-semibold text-lg text-gray-700">{name}</span>
+  </motion.a>
+);
