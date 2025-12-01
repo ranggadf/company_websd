@@ -148,11 +148,9 @@ useEffect(() => {
       const res = await axios.get(apiEndpoints.GETLANDING);
 
       const sortDesc = (arr: any[]) => {
-        return [...arr].sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-      };
+  return [...arr].sort((a, b) => b.id - a.id);
+};
+
 
       const sec1 = sortDesc(res.data.filter((item: any) => item.section === "1"));
       const sec2 = sortDesc(res.data.filter((item: any) => item.section === "2"));
@@ -172,7 +170,10 @@ useEffect(() => {
   fetchLanding();
 }, []);
 
-
+{/* === Ambil 3 data terbaru berdasarkan ID terbesar === */}
+const latestSection4 = [...section4]
+  .sort((a, b) => b.id - a.id)
+  .slice(0, 3);
   if (loading) {
     return (
       <div className="flex flex-col gap-6 justify-center items-center h-[80vh] animate-pulse">
@@ -207,7 +208,7 @@ useEffect(() => {
         viewport={{ once: true, amount: 0.3 }}
         className="relative h-[90vh] w-full bg-cover bg-center flex flex-col justify-center items-center text-center text-white"
         style={{
-          backgroundImage: "url('/coba1.png')",
+          backgroundImage: "url('/halaman.jpg')",
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>
@@ -377,28 +378,31 @@ useEffect(() => {
   ))}
 </div>
 
-  {/* === DESKTOP GRID === */}
-  <div className="hidden lg:grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
-    {section4.map((item, index) => (
-      <div key={index} className="bg-red-800 rounded-lg p-4 h-full flex">
-        <div className="bg-white rounded-lg shadow-md p-6 w-full flex flex-col justify-between items-center min-h-[360px]">
-          <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded mb-4 text-center">
-            {item.judul}
-          </span>
 
-          <img
-            src={`${image_url}/${item.Gambar}`}
-            alt={item.judul}
-            className="w-32 h-32 mb-4 object-contain"
-          />
 
-          <p className="text-[#333] text-lg text-center px-2">
-            {item.deskripsi}
-          </p>
-        </div>
+{/* === DESKTOP GRID === */}
+<div className="hidden lg:grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
+  {latestSection4.map((item, index) => (
+    <div key={index} className="bg-red-800 rounded-lg p-4 h-full flex">
+      <div className="bg-white rounded-lg shadow-md p-6 w-full flex flex-col justify-between items-center min-h-[360px]">
+        <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded mb-4 text-center">
+          {item.judul}
+        </span>
+
+        <img
+          src={`${image_url}/${item.Gambar}`}
+          alt={item.judul}
+          className="w-32 h-32 mb-4 object-contain"
+        />
+
+        <p className="text-[#333] text-lg text-center px-2">
+          {item.deskripsi}
+        </p>
       </div>
-    ))}
-  </div>
+    </div>
+  ))}
+</div>
+
 </motion.section>
 
 

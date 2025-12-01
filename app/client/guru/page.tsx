@@ -2,77 +2,120 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { apiEndpoints, image_url } from "@/app/api/api";
 import Footer from "@/components/Footer";
+import { apiEndpoints, image_url } from "@/app/api/api";
 
-interface Guru {
-  id: number;
-  kategori: string;
-  nama: string;
-  jabatan: string;
-  gambar: string;
-}
-
-interface KategoriGuru {
-  kategori: string;
-  gurus: Guru[];
-}
-
-export default function DaftarGuruKaryawan() {
-  const [kategoriGuru, setKategoriGuru] = useState<KategoriGuru[]>([]);
+export default function DaftarGuru() {
+  const [kepalaSekolah, setKepalaSekolah] = useState<any[]>([]);
+  const [guruMapel, setGuruMapel] = useState<any[]>([]);
+  const [guruKelas, setGuruKelas] = useState<any[]>([]);
+  const [karyawan, setKaryawan] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get<KategoriGuru[]>(apiEndpoints.GETGURU_BY_KATEGORI_ALL)
-      .then((res) => setKategoriGuru(res.data))
-      .catch((err) => console.error("Gagal mengambil data:", err));
+    const fetchGuru = async () => {
+      try {
+        const res = await axios.get(apiEndpoints.GETGuru);
+        console.log("DATA DARI API:", res.data);
+
+        const data = res.data;
+
+        // Pisah berdasarkan kategori
+        setKepalaSekolah(data.filter((x: any) => x.kategori === "Kepala Sekolah"));
+        setGuruMapel(data.filter((x: any) => x.kategori === "Guru Mapel"));
+        setGuruKelas(data.filter((x: any) => x.kategori === "Guru Kelas"));
+        setKaryawan(data.filter((x: any) => x.kategori === "Karyawan"));
+      } catch (err) {
+        console.log("Error fetch guru:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGuru();
   }, []);
+
+  // Grid Reusable
+  const GridGuru = ({ data }: { data: any[] }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 
+                    gap-10 max-w-7xl mx-auto px-6 py-10">
+      {data.map((guru, index) => (
+        <div
+          key={index}
+          className="bg-white rounded-xl shadow-lg overflow-hidden border"
+        >
+          <img
+            src={`${image_url}/${guru.gambar}`}
+            alt={guru.nama}
+            className="w-full h-[350px] object-cover"
+          />
+
+          <div className="p-4">
+            <h2 className="font-bold text-xl">{guru.nama}</h2>
+            <p className="mt-1 text-gray-700">• {guru.jabatan}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  if (loading)
+    return (
+      <div className="py-32 text-center text-xl font-semibold">
+        Loading data guru...
+      </div>
+    );
 
   return (
     <div className="w-full">
       {/* Header */}
-      <div
-        className="bg-cover bg-[center_top_60%] h-64"
-        style={{ backgroundImage: "url('/guru.jpeg')" }}
-      >
-        <h1 className="text-white text-[64px] font-bold text-center pt-24">
-          Daftar Guru dan Karyawan
+      <div className="bg-red-800 h-64 flex items-center justify-center">
+        <h1 className="text-white text-4xl md:text-6xl font-bold">
+          Daftar Guru dan Staf SDN 01 Manguharjo
         </h1>
       </div>
 
-      {/* Loop kategori */}
-      {kategoriGuru.map((kategoriItem) => (
-        <div key={kategoriItem.kategori} className="py-16 bg-[#FFFFFF]">
-          <h1 className="text-[64px] font-bold text-center mb-10">
-            {kategoriItem.kategori}
-          </h1>
+      {/* KEPALA SEKOLAH */}
+      <h2 className="text-center text-3xl md:text-5xl font-bold mt-16">
+        Kepala Sekolah
+      </h2>
 
-          <div className="flex justify-center gap-8 flex-wrap">
-            {kategoriItem.gurus.length > 0 ? (
-              kategoriItem.gurus.map((guru: Guru) => (
-                <div
-                  key={guru.id}
-                  className="bg-[#DF4043] w-[399px] h-[391px] rounded-lg shadow-lg flex items-center justify-center"
-                >
-                  <div className="bg-white w-[303px] h-[288px] rounded flex flex-col items-center justify-center">
-                    <img
-                      src={`${image_url}/${guru.gambar}`}
-                      alt={guru.nama}
-                      className="w-40 h-40 object-cover mb-4 rounded-full"
-                    />
-                    <p className="font-bold text-[20px]">{guru.nama}</p>
-                    <p className="text-[#FF0000] font-bold text-[20px]">
-                      {guru.jabatan}
-                    </p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-gray-500">Tidak ada data</p>
-            )}
+      <div className="flex justify-center py-10">
+        {kepalaSekolah.length > 0 ? (
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden border w-[300px]">
+            <img
+              src={`${image_url}/${kepalaSekolah[0].gambar}`}
+              alt={kepalaSekolah[0].nama}
+              className="w-full h-[350px] object-cover"
+            />
+
+            <div className="p-4 text-center">
+              <h2 className="font-bold text-xl">{kepalaSekolah[0].nama}</h2>
+              <p className="mt-1 text-gray-700">• {kepalaSekolah[0].jabatan}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ) : (
+          <p>Tidak ada data kepala sekolah.</p>
+        )}
+      </div>
+
+      {/* GURU MAPEL */}
+      <h2 className="text-center text-3xl md:text-5xl font-bold mt-16">
+        Guru Mapel
+      </h2>
+      <GridGuru data={guruMapel} />
+
+      {/* GURU KELAS */}
+      <h2 className="text-center text-3xl md:text-5xl font-bold mt-16">
+        Guru Kelas
+      </h2>
+      <GridGuru data={guruKelas} />
+
+      {/* KARYAWAN */}
+      <h2 className="text-center text-3xl md:text-5xl font-bold mt-16">
+        Karyawan
+      </h2>
+      <GridGuru data={karyawan} />
 
       <Footer />
     </div>

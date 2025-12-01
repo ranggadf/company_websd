@@ -12,8 +12,8 @@ export const apiEndpoints = {
   GETEkskul: `${api_url}/getEkskul`,
   GETHubungiKami: `${api_url}/gethubungikami`,
   GETVisiMisi: `${api_url}/getvisimisi`,
-  GETGURU: `${api_url}/guru`, 
-  GETGURU_BY_KATEGORI_ALL: `${api_url}/getGuruByKategoriAll`,
+  
+  GETGuru: `${api_url}/getGuru`,
 
 
 

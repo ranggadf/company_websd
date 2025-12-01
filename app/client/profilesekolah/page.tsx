@@ -44,7 +44,13 @@ export default function Profil() {
       const arrayData: any[] = Array.isArray(response.data) ? response.data : [];
 
       setSejarah(arrayData.find((item) => item.section?.toLowerCase() === "sejarah") || null);
-      setPrograms(arrayData.filter((item) => item.section?.toLowerCase() === "program") || []);
+   setPrograms(
+  arrayData
+    .filter((item) => item.section?.toLowerCase() === "program")
+    .sort((a, b) => b.id - a.id) // urutkan dari ID terbesar
+    .slice(0, 6)                // ambil 6 data terbaru
+);
+
       setAkreditasi(arrayData.find((item) => item.section?.toLowerCase() === "akreditasi") || null);
       setKontak(arrayData.find((item) => item.section?.toLowerCase() === "kontak") || null);
     } catch (err) {
