@@ -16,11 +16,8 @@ export default function DaftarGuru() {
     const fetchGuru = async () => {
       try {
         const res = await axios.get(apiEndpoints.GETGuru);
-        console.log("DATA DARI API:", res.data);
-
         const data = res.data;
 
-        // Pisah berdasarkan kategori
         setKepalaSekolah(data.filter((x: any) => x.kategori === "Kepala Sekolah"));
         setGuruMapel(data.filter((x: any) => x.kategori === "Guru Mapel"));
         setGuruKelas(data.filter((x: any) => x.kategori === "Guru Kelas"));
@@ -35,35 +32,63 @@ export default function DaftarGuru() {
     fetchGuru();
   }, []);
 
-  // Grid Reusable
-  const GridGuru = ({ data }: { data: any[] }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
-                  gap-8 max-w-6xl mx-auto px-4 py-10">
-    {data.map((guru, index) => (
-      <div
-        key={index}
-        className="bg-white rounded-xl shadow-md overflow-hidden border w-full max-w-[260px] mx-auto"
-      >
-        <img
-          src={`${image_url}/${guru.gambar}`}
-          alt={guru.nama}
-          className="w-full h-[260px] object-cover"
-        />
-
-        <div className="p-4 text-center">
-          <h2 className="font-bold text-lg">{guru.nama}</h2>
-          <p className="mt-1 text-gray-700 text-sm">• {guru.jabatan}</p>
-        </div>
+  // === Skeleton Components ===
+  const SkeletonCard = () => (
+    <div className="bg-gray-200 animate-pulse rounded-xl w-full max-w-[260px] mx-auto overflow-hidden">
+      <div className="w-full h-[260px] bg-gray-300"></div>
+      <div className="p-4 text-center">
+        <div className="h-5 bg-gray-300 rounded w-3/4 mx-auto"></div>
+        <div className="h-4 bg-gray-300 rounded w-1/2 mx-auto mt-3"></div>
       </div>
-    ))}
-  </div>
-);
+    </div>
+  );
 
+  const SkeletonGrid = () => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+                    gap-8 max-w-6xl mx-auto px-4 py-10">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <SkeletonCard key={i} />
+      ))}
+    </div>
+  );
 
+  // === Grid Guru Reusable ===
+  const GridGuru = ({ data }: { data: any[] }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+                    gap-8 max-w-6xl mx-auto px-4 py-10">
+      {data.map((guru, index) => (
+        <div
+          key={index}
+          className="bg-white rounded-xl shadow-md overflow-hidden border w-full max-w-[260px] mx-auto"
+        >
+          <img
+            src={`${image_url}/${guru.gambar}`}
+            alt={guru.nama}
+            className="w-full h-[260px] object-cover"
+          />
+
+          <div className="p-4 text-center">
+            <h2 className="font-bold text-lg">{guru.nama}</h2>
+            <p className="mt-1 text-gray-700 text-sm">• {guru.jabatan}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // === Loading State: tampilkan skeleton ===
   if (loading)
     return (
-      <div className="py-32 text-center text-xl font-semibold">
-        Loading data guru...
+      <div className="w-full">
+        {/* Header Skeleton */}
+        <div className="bg-gray-300 h-64 animate-pulse"></div>
+
+        <h2 className="text-center text-4xl font-bold mt-10 animate-pulse text-gray-400">
+          Loading data guru...
+        </h2>
+
+        <SkeletonGrid />
+        <SkeletonGrid />
       </div>
     );
 
