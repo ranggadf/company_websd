@@ -101,16 +101,18 @@ export default function Fasilitas() {
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition"
               >
                 {/* Gambar */}
-                <div className="w-full h-48 flex items-center justify-center bg-gray-50">
+                <div className="w-full h-48 bg-gray-50 overflow-hidden">
+
                   {item.Gambar && (
                     <Image
-                      src={`${image_url}/${item.Gambar}`}
-                      alt={item.judul}
-                      width={400}
-                      height={400}
-                      className="object-contain h-full p-2"
-                      unoptimized
-                    />
+  src={`${image_url}/${item.Gambar}`}
+  alt={item.judul}
+  width={400}
+  height={400}
+  className="w-full h-full object-cover"
+  unoptimized
+/>
+
                   )}
                 </div>
 

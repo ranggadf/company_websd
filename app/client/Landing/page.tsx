@@ -670,7 +670,7 @@ const latestSection4 = [...section4]
 
     <div className="text-center mt-12">
       <Link
-        href="/admin/CMS_berita/Berita"
+        href="/client/berita"
         className="inline-block bg-red-700 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-red-800 transition"
       >
         Lihat Semua Berita

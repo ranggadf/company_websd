@@ -96,20 +96,20 @@ export default function Ekskul() {
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition"
               >
                 {/* Gambar */}
-                <div className="w-full h-48 flex items-center justify-center bg-gray-50">
-                  {item.Gambar ? (
-                    <Image
-                      src={`${image_url}/${item.Gambar}`}
-                      alt={item.judul}
-                      width={400}
-                      height={300}
-                      className="object-contain h-full p-2"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="w-full h-48 bg-gray-300" />
-                  )}
-                </div>
+               <div className="w-full h-48 bg-gray-50 overflow-hidden">
+  {item.Gambar ? (
+    <Image
+      src={`${image_url}/${item.Gambar}`}
+      alt={item.judul}
+      width={400}
+      height={300}
+      className="w-full h-full object-cover"
+      unoptimized
+    />
+  ) : (
+    <div className="w-full h-48 bg-gray-300" />
+  )}
+</div>
 
                 {/* Isi card */}
                 <div className="p-4">

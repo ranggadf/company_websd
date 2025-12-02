@@ -106,9 +106,9 @@ export default function BeritaPage() {
 
                     {/* Konten teks */}
                     <div className="mt-4 flex flex-col">
-                      <h3 className="text-xl md:text-2xl font-semibold text-gray-900 hover:text-red-600 cursor-pointer">
-                        {item.judul}
-                      </h3>
+                      <h3 className="text-xl md:text-2xl font-semibold text-gray-900">
+  {item.judul}
+</h3>
 
                       <p className="mt-2 text-gray-600 leading-relaxed">
                         {item.deskripsi}

@@ -33,7 +33,8 @@ export default function NavigationBar() {
     <div className="fixed top-0 left-0 w-full bg-white shadow-md py-3 px-6 z-50">
       <div className="flex justify-between items-center">
         {/* === LEFT: Logo + Menu === */}
-        <div className="flex items-center gap-8 ml-20">
+       <div className="flex items-center gap-8 ml-4 md:ml-20">
+
           <Link href="/">
             <Image src="/logosd.png" width={50} height={50} alt="Logo Sekolah" />
           </Link>
@@ -97,7 +98,7 @@ export default function NavigationBar() {
         {/* === RIGHT: PPDB === */}
         <div className="hidden md:block mr-10">
           <a
-            href="https://madiunkota.spmb.id/"
+            href="https://spmb.madiunkota.go.id/"
             target="_blank"
             className="text-[16px] font-semibold hover:text-red-600"
           >

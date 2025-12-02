@@ -37,27 +37,28 @@ export default function DaftarGuru() {
 
   // Grid Reusable
   const GridGuru = ({ data }: { data: any[] }) => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 
-                    gap-10 max-w-7xl mx-auto px-6 py-10">
-      {data.map((guru, index) => (
-        <div
-          key={index}
-          className="bg-white rounded-xl shadow-lg overflow-hidden border"
-        >
-          <img
-            src={`${image_url}/${guru.gambar}`}
-            alt={guru.nama}
-            className="w-full h-[350px] object-cover"
-          />
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 
+                  gap-8 max-w-6xl mx-auto px-4 py-10">
+    {data.map((guru, index) => (
+      <div
+        key={index}
+        className="bg-white rounded-xl shadow-md overflow-hidden border w-full max-w-[260px] mx-auto"
+      >
+        <img
+          src={`${image_url}/${guru.gambar}`}
+          alt={guru.nama}
+          className="w-full h-[260px] object-cover"
+        />
 
-          <div className="p-4">
-            <h2 className="font-bold text-xl">{guru.nama}</h2>
-            <p className="mt-1 text-gray-700">• {guru.jabatan}</p>
-          </div>
+        <div className="p-4 text-center">
+          <h2 className="font-bold text-lg">{guru.nama}</h2>
+          <p className="mt-1 text-gray-700 text-sm">• {guru.jabatan}</p>
         </div>
-      ))}
-    </div>
-  );
+      </div>
+    ))}
+  </div>
+);
+
 
   if (loading)
     return (
@@ -70,7 +71,7 @@ export default function DaftarGuru() {
     <div className="w-full">
       {/* Header */}
       <div className="bg-red-800 h-64 flex items-center justify-center">
-        <h1 className="text-white text-4xl md:text-6xl font-bold">
+        <h1 className="text-white text-[40px] font-bold">
           Daftar Guru dan Staf SDN 01 Manguharjo
         </h1>
       </div>
@@ -113,7 +114,7 @@ export default function DaftarGuru() {
 
       {/* KARYAWAN */}
       <h2 className="text-center text-3xl md:text-5xl font-bold mt-16">
-        Karyawan
+        Staff
       </h2>
       <GridGuru data={karyawan} />
 
